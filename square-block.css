@@ -1,0 +1,106 @@
+:host {
+	display: block;
+}
+
+:host #add {
+	color: #636363;
+	padding: 15px;
+	width: 70px;
+	height: 70px;
+}
+
+:host #add:hover {
+	color: #313131;
+	cursor: pointer;
+}
+
+:host #add [layout] {
+	overflow: hidden;
+	max-width: 100%;
+	max-height: 100%;
+}
+
+:host #add #label {
+	background: inherit;
+}
+
+:host #add [layout] core-icon {
+	width: 50px;
+	height: 50px;
+}
+
+:host #matting {
+	padding: 0 15px!important;
+	font-family: RobotoDraft;
+	font-size: 14px;
+	background: white!important;
+}
+
+:host([mode="view"]) #matting {
+	padding: 0;
+}
+
+:host #border1,
+:host #border2,
+:host #border3 {
+	border-top: 1px solid transparent;
+	border-bottom: 1px solid transparent;
+}
+
+:host([mode="view"]) #border1,
+:host([mode="view"]) #border2,
+:host([mode="view"]) #border3 {
+	border-width: 0;
+}
+
+:host #border2 {
+	border-left: 1px solid transparent;
+	border-right: 1px solid transparent;
+}
+
+:host([mode="edit"]) #border2:hover {
+	border-color: #EBEBEB;
+}
+
+:host #border3 {
+	padding: 15px;
+}
+
+:host([mode="view"]) #border3 {
+	padding: 0;
+}
+
+:host #matting[topDroplet] #border1,
+:host #matting[topDroplet] #border2,
+:host #matting[topDroplet] #border3 {
+	border-top-color: #222222;
+}
+
+:host #matting[bottomDroplet] #border1,
+:host #matting[bottomDroplet] #border2,
+:host #matting[bottomDroplet] #border3 {
+	border-bottom-color: #222222;
+}
+
+:host #topDroplet,
+:host #bottomDroplet {
+	position: absolute;
+	left: 0;
+	color: #CCCCCC;
+	width: 0;
+	height: 0;
+	z-index: 1;
+}
+
+:host #topDroplet {
+	top: 0;
+}
+
+:host #bottomDroplet {
+	bottom: 0;
+}
+
+:host #topDroplet:hover,
+:host #bottomDroplet:hover {
+	color: #222222;
+}

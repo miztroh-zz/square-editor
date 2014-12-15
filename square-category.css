@@ -1,0 +1,16 @@
+:host {
+	display: block;
+}
+
+:host #label {
+	padding: 8px;
+	background: #E4E4E4;
+	text-transform: uppercase;
+	color: #3E3E3E;
+	text-align: center;
+}
+
+:host #layout {
+	width: 400px;
+	margin: 0;
+}

@@ -1,0 +1,75 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="/bower_components/core-animation/core-animation.html">
+<link rel="import" href="/bower_components/core-icon/core-icon.html">
+<link rel="import" href="/bower_components/core-iconset-svg/core-iconset-svg.html">
+<link rel="import" href="/bower_components/font-roboto/roboto.html">
+<polymer-element name="square-block" square-block mode="add">
+  <template>
+  	<link rel="stylesheet" href="square-block.css">
+  	<div id="container">
+			<template if="{{mode === 'add'}}">
+				<div id="add">
+					<div vertical center layout id="layout">
+						<core-icon icon="{{icon}}" id="icon"></core-icon>
+						<label id="label">{{label}}</label>
+					</div>
+				</div>
+			</template>
+			<template if="{{mode === 'edit' || mode === 'view'}}">
+				<template is="auto-binding">
+			  	<core-animation id="topDropletAnimation" duration="150" target="{{$.topDroplet}}" fill="both">
+			  		<core-animation-keyframe>
+			  			<core-animation-prop name="width" value="0"></core-animation-prop>
+			  			<core-animation-prop name="height" value="0"></core-animation-prop>
+			  			<core-animation-prop name="top" value="0"></core-animation-prop>
+			  			<core-animation-prop name="left" value="0"></core-animation-prop>
+			  		</core-animation-keyframe>
+			  		<core-animation-keyframe>
+			  			<core-animation-prop name="width" value="30px"></core-animation-prop>
+			  			<core-animation-prop name="height" value="30px"></core-animation-prop>
+			  			<core-animation-prop name="top" value="-14px"></core-animation-prop>
+			  			<core-animation-prop name="left" value="-14px"></core-animation-prop>
+			  		</core-animation-keyframe>
+			  	</core-animation>
+			  	<core-animation id="bottomDropletAnimation" duration="150" target="{{$.bottomDroplet}}" fill="both">
+			  		<core-animation-keyframe>
+			  			<core-animation-prop name="width" value="0"></core-animation-prop>
+			  			<core-animation-prop name="height" value="0"></core-animation-prop>
+			  			<core-animation-prop name="bottom" value="0"></core-animation-prop>
+			  			<core-animation-prop name="left" value="0"></core-animation-prop>
+			  		</core-animation-keyframe>
+			  		<core-animation-keyframe>
+			  			<core-animation-prop name="width" value="30px"></core-animation-prop>
+			  			<core-animation-prop name="height" value="30px"></core-animation-prop>
+			  			<core-animation-prop name="bottom" value="-13px"></core-animation-prop>
+			  			<core-animation-prop name="left" value="-14px"></core-animation-prop>
+			  		</core-animation-keyframe>
+			  	</core-animation>
+					<core-iconset-svg id="square-block" iconSize="24">
+						<svg>
+							<defs>
+								<g id="droplet">
+									<path d="m 22.5,12.14387 c 0,0 -4.43412,4.47252 -6.02189,6.0603 C 14.89033,19.79194 12.69684,20.774 10.27397,20.774 5.42824,20.774 1.5,16.84577 1.5,12.00003 1.5,7.1543 5.42824,3.2260603 10.27397,3.2260603 c 2.42287,0 4.61636,0.98206 6.20414,2.56983 C 18.06588,7.38367 22.5,12.14387 22.5,12.14387 z" />
+								</g>
+							</defs>
+						</svg>
+					</core-iconset-svg>
+			  	<div id="matting">
+			  		<div relative>
+			  			<core-icon icon="square-block:droplet" id="topDroplet"></core-icon>
+			  			<div id="border1">
+			  				<div id="border2">
+				  				<div id="border3">
+				  					<content></content>
+				  				</div>
+			  				</div>
+			  			</div>
+			  			<core-icon icon="square-block:droplet" id="bottomDroplet"></core-icon>
+			  		</div>
+			  	</div>
+		  	</template>
+			</template>
+		</div>
+  </template>
+	<script src="square-block.js"></script>
+</polymer-element>

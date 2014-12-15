@@ -1,0 +1,97 @@
+:host {
+	display: block;
+}
+
+:host #matting {
+	padding: 33px;
+	background: #F2F2F2;
+	height: calc(100% - 66px);
+}
+
+:host([mode="view"]) #matting {
+	padding: 0;
+	height: auto;
+}
+
+:host #fullscreenButton:hover {
+	background: #F2F2F2;
+	cursor: pointer;
+}
+
+:host([mode="view"]) #fullscreenLayout {
+	display: none;
+}
+
+:host #mounting {
+	background: white;
+	height: 100%;
+	max-width: 100%;
+}
+
+:host([mode="view"]) #mounting {
+	padding: 0;
+	height: 100%;
+}
+
+:host #mounting[resting] {
+	top: auto!important;
+	right: auto!important;
+	bottom: auto!important;
+	left: auto!important;
+	width: auto!important;
+	height: auto!important;
+}
+
+:host #blocks {
+	max-width: 1200px;
+	margin: 0 auto;
+}
+
+:host #blockChooser {
+	font-family: RobotoDraft;
+	font-size: 11px;
+	min-width: 100px;
+	min-height: 100px;
+}
+
+:host #blockChooser::shadow #scroller {
+	overflow-x: hidden;
+}
+
+:host #blockChooser > div {
+	min-width: 400px;
+	min-height: 100px;
+}
+
+:host([mode="view"]) #blockChooser {
+	display: none;
+}
+
+:host content[select="[square-block][mode='edit'],[square-block][mode='view']"]::content [square-block][mode='edit'] + [square-block][mode='edit'] {
+	margin-top: -3px;
+}
+
+:host content[select="[square-block][mode='edit'],[square-block][mode='view']"]::content [square-block][mode='edit'] + [square-block][mode='edit']::shadow #topDroplet {
+	display: none;
+}
+
+:host([mode="view"]) content[select="[square-category]"]::content [square-category] {
+	display: none;
+}
+
+:host #fabLayout {
+	overflow: hidden;
+	pointer-events: none;
+}
+
+:host([mode="view"]) #fabLayout {
+	display: none;
+}
+
+:host #fab {
+	position: absolute;
+	bottom: -110px;
+	opacity: 0;
+	background: black;
+	pointer-events: all;
+}

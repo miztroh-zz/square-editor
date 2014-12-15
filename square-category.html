@@ -1,0 +1,11 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<polymer-element name="square-category" square-category attributes="label">
+  <template>
+  	<link rel="stylesheet" href="square-category.css">
+  	<div id="label">{{label}}</div>
+  	<core-menu layout horizontal wrap id="layout">
+  		<content select="[square-block][mode='add']"></content>
+  	</core-menu>
+  </template>
+  <script src="square-category.js"></script>
+</polymer-element>
