@@ -1,0 +1,35 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="../../square-block.html">
+<link rel="import" href="/bower_components/paper-dialog/paper-action-dialog.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/paper-input/paper-autogrow-textarea.html">
+<link rel="import" href="/bower_components/core-icons/editor-icons.html">
+<polymer-element name="square-block-quote" extends="square-block" label="Quote" icon="editor:format-quote">
+  <template>
+    <style>
+      :host::shadow #quoteContainer div:nth-child(2) {
+        text-align: right;
+      }
+    </style>
+  	<shadow></shadow>
+  	<div id="quoteContainer">
+  	 <div><template if="{{quote.length > 0}}">&laquo;</template>{{text}}<template if="{{quote.length > 0}}">&raquo;</template></div>
+  	 <div><template if="{{attribution.length > 0}}">&mdash; </template>{{attribution}}</div>
+  	</div>
+  	<paper-action-dialog heading="Quote" id="dialog" backdrop>
+  	  <label>Text</label>
+      <paper-input-decorator style="width: 300px;">
+  	    <paper-autogrow-textarea>
+  	      <textarea id="textInput"></textarea>
+  	    </paper-autogrow-textarea>
+      </paper-input-decorator>
+  	  <label>Attribution</label>
+  	  <paper-input id="attributionInput" style="display: block; width: 300px;"></paper-input>
+  	  <paper-button dismissive id="remove" style="background: #d9534f; color: white;">Remove</paper-button>
+  	  <paper-button dismissive id="cancel" style="background: #f0ad4e; color: white;">Cancel</paper-button>
+  	  <paper-button affirmative id="save" style="background: #337ab7; color: white;">Save</paper-button>
+  	</paper-action-dialog>
+  </template>
+	<script src="square-block-quote.js"></script>
+</polymer-element>

@@ -1,0 +1,36 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="../../square-block.html">
+<link rel="import" href="/bower_components/paper-dialog/paper-action-dialog.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/core-image/core-image.html">
+<link rel="import" href="/bower_components/hover-caption/hover-caption.html">
+<link rel="import" href="/bower_components/core-icons/editor-icons.html">
+<polymer-element name="square-block-image" extends="square-block" label="Image" icon="editor:insert-photo">
+  <template>
+    <style>
+      :host::shadow #imageContainer core-image,
+      :host::shadow #imageContainer core-image::shadow img {
+        max-width: 100%;
+      }
+    </style>
+  	<shadow></shadow>
+  	<div id="imageContainer">
+  	  <core-image src="{{src}}">
+    	  <template if="{{caption.length > 0}}">
+    	    <hover-caption>{{caption}}</hover-caption>
+    	  </template>
+  	  </core-image>
+  	</div>
+  	<paper-action-dialog heading="Image" id="dialog" backdrop autoCloseDisabled>
+  	  <label>Source</label>
+  	  <paper-input id="srcInput" style="display: block; width: 300px;"></paper-input>
+  	  <label>Caption</label>
+  	  <paper-input id="captionInput" style="display: block; width: 300px;"></paper-input>
+  	  <paper-button dismissive id="remove" style="background: #d9534f; color: white;">Remove</paper-button>
+  	  <paper-button dismissive id="cancel" style="background: #f0ad4e; color: white;">Cancel</paper-button>
+  	  <paper-button affirmative id="save" style="background: #337ab7; color: white;">Save</paper-button>
+  	</paper-action-dialog>
+  </template>
+	<script src="square-block-image.js"></script>
+</polymer-element>

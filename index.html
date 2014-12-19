@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>Square Editor</title>
+		<script src="/bower_components/webcomponentsjs/webcomponents.min.js"></script>
+		<link rel="import" href="/bower_components/font-roboto/roboto.html">
+		<link rel="import" href="square-editor.html">
+		<style>
+		  body {
+		    font-family: RobotoDraft;
+		  }
+		</style>
+	</head>
+	<body fullbleed unresolved style="background: #ebebeb;">
+		<div style="width: 600px; margin: 0 auto 0 auto; height: 100%;">
+			<square-editor mode="edit">
+				<square-block-text mode="edit"></square-block-text>
+				<square-category label="Basic">
+					<square-block-text></square-block-text>
+					<square-block-quote></square-block-quote>
+					<square-block-image></square-block-image>
+					<square-block-audio></square-block-audio>
+					<square-block-video></square-block-video>
+				</square-category>
+				<square-category label="More">
+					<square-block-line></square-block-line>
+					<square-block-code></square-block-code>
+				</square-category>
+			</square-editor>
+		</div>
+	</body>
+</html>

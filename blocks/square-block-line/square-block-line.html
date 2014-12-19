@@ -1,0 +1,19 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="../../square-block.html">
+<link rel="import" href="../../square-icons.html">
+<polymer-element name="square-block-line" extends="square-block" label="Line" icon="square-editor:line-block">
+  <template>
+    <style>
+      :host::shadow #lineContainer hr {
+        border: 0;
+        background: #bbbbbb;
+        height: 1px;
+        padding: 0;
+        margin: 0;
+      }
+    </style>
+  	<shadow></shadow>
+  	<div id="lineContainer"><hr></div>
+  </template>
+	<script src="square-block-line.js"></script>
+</polymer-element>

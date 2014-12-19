@@ -1,0 +1,15 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="../../square-block.html">
+<link rel="import" href="/bower_components/core-icons/core-icons.html">
+<polymer-element name="square-block-text" extends="square-block" label="Text" icon="text-format">
+  <template>
+    <style>
+      :host::shadow #textContainer {
+        outline: none;
+      }
+    </style>
+  	<shadow></shadow>
+  	<div id="textContainer">Write here...</div>
+  </template>
+	<script src="square-block-text.js"></script>
+</polymer-element>

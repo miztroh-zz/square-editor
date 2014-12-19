@@ -1,0 +1,27 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="../../square-block.html">
+<link rel="import" href="/bower_components/paper-dialog/paper-action-dialog.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/core-icons/image-icons.html">
+<polymer-element name="square-block-audio" extends="square-block" label="Audio" icon="image:audiotrack">
+  <template>
+    <style>
+      :host::shadow #audioContainer audio {
+        width: 100%;
+      }
+    </style>
+  	<shadow></shadow>
+  	<div id="audioContainer">
+  	  <template if="{{src.length > 0}}"><audio src="{{src}}" controls></audio></template>
+  	</div>
+  	<paper-action-dialog heading="Audio" id="dialog" backdrop>
+  	  <label>Source</label>
+  	  <paper-input id="srcInput" style="display: block; width: 300px;"></paper-input>
+  	  <paper-button dismissive id="remove" style="background: #d9534f; color: white;">Remove</paper-button>
+  	  <paper-button dismissive id="cancel" style="background: #f0ad4e; color: white;">Cancel</paper-button>
+  	  <paper-button affirmative id="save" style="background: #337ab7; color: white;">Save</paper-button>
+  	</paper-action-dialog>
+  </template>
+	<script src="square-block-audio.js"></script>
+</polymer-element>
