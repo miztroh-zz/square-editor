@@ -113,10 +113,21 @@ Polymer(
 				}
 			);
 
+      this.addEventListener(
+        'dblclick',
+        function (event) {
+          if (this.mode === 'edit' && Array.prototype.indexOf.call(event.path, this.$.container.querySelector('#border3')) >= 0) {
+            this.showOptions();
+          }
+        }
+      );
+
 			this.modeChanged();
 		},
 		save: function () {
 			return '';
+		},
+		showOptions: function() {
 		}
 	}
 );

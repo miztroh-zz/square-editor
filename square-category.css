@@ -2,6 +2,10 @@
 	display: block;
 }
 
+:host([mode="search"]) {
+  display: inline-block;
+}
+
 :host #label {
 	padding: 8px;
 	background: #E4E4E4;
@@ -10,7 +14,19 @@
 	text-align: center;
 }
 
+:host([mode="search"]) #label {
+  display: none;
+}
+
 :host #layout {
-	width: 400px;
 	margin: 0;
+	max-width: 400px;
+}
+
+:host([mode="search"])::shadow ::content [square-block] {
+  display: none;
+}
+
+:host([mode="search"])::shadow ::content [square-block][search-result] {
+  display: inline-block;
 }

@@ -7,11 +7,17 @@
 	padding: 15px;
 	width: 70px;
 	height: 70px;
+	display: none;
+}
+
+:host([mode="add"]) #add{
+  display: block;
 }
 
 :host #add:hover {
 	color: #313131;
 	cursor: pointer;
+	background: #f5f5f5;
 }
 
 :host #add [layout] {
@@ -29,6 +35,15 @@
 	height: 50px;
 }
 
+:host #editOrView {
+  display: none;
+}
+
+:host([mode="edit"]) #editOrView,
+:host([mode="view"]) #editOrView {
+  display: block;
+}
+
 :host #matting {
 	padding: 0 15px!important;
 	font-family: RobotoDraft;
@@ -36,21 +51,11 @@
 	background: white!important;
 }
 
-:host([mode="view"]) #matting {
-	padding: 0;
-}
-
 :host #border1,
 :host #border2,
 :host #border3 {
 	border-top: 1px solid transparent;
 	border-bottom: 1px solid transparent;
-}
-
-:host([mode="view"]) #border1,
-:host([mode="view"]) #border2,
-:host([mode="view"]) #border3 {
-	border-width: 0;
 }
 
 :host #border2 {
@@ -64,10 +69,6 @@
 
 :host #border3 {
 	padding: 15px;
-}
-
-:host([mode="view"]) #border3 {
-	padding: 0;
 }
 
 :host #matting[topDroplet] #border1,
