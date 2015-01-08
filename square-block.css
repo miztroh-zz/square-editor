@@ -91,6 +91,10 @@
   color: white;
 }
 
+:host #toolbar > .button.danger:not([disabled]):hover {
+  background: #F0523D;
+}
+
 :host #toolbar > .button.active {
   background: #797979;
   color: white;
@@ -115,11 +119,16 @@
 
 :host #toolbar > core-dropdown > core-menu > .button:hover {
   cursor: pointer;
+  color: white;
 }
 
 :host #toolbar > core-dropdown > core-menu > .button.active {
   background: #797979;
   color: white;
+}
+
+:host #toolbar > core-dropdown > core-menu > .button.danger:hover {
+  background: #F0523D;
 }
 
 :host #toolbar h1,

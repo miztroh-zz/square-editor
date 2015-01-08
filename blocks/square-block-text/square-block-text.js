@@ -217,6 +217,13 @@ Polymer(
           }
         }
       );
+
+      this.$.remove.addEventListener(
+        'click',
+        function () {
+          that.parentNode.removeChild(that);
+        }
+      );
 		},
 		save: function () {
 		  var clone = this.cloneNode();

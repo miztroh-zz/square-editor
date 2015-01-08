@@ -15,18 +15,23 @@
 
           return pos;
 			  },
+			  childrenUpdated: function (observer, mutations) {
+			    if (this.$.blocks.querySelector('content').getDistributedNodes().length === 0) {
+  					var defaultBlock = document.createElement(this.defaultBlock);
+
+  					if (defaultBlock) {
+  						defaultBlock.mode = this.mode;
+  						this.appendChild(defaultBlock);
+  					}
+			    }
+
+			    this.onMutation(this, this.childrenUpdated);
+			  },
 			  clearBlocks: function () {
 			    var blocks = this.$.blocks.querySelector('content').getDistributedNodes();
 
 					for (var i = 0; i < blocks.length; i += 1) {
 						this.removeChild(blocks[i]);
-					}
-
-					var defaultBlock = document.createElement(this.defaultBlock);
-
-					if (defaultBlock) {
-						defaultBlock.mode = this.mode;
-						this.appendChild(defaultBlock);
 					}
 			  },
 				modeChanged: function () {
@@ -50,6 +55,8 @@
 				},
 				ready: function () {
 					var that = this, insertBefore;
+
+          this.onMutation(this, this.childrenUpdated);
 
           this.$.blockChooser.addEventListener(
             'core-overlay-close-completed',
