@@ -1,5 +1,11 @@
 Polymer(
 	{
+		iconChanged: function () {
+			this.icon = 'editor:format-quote';
+		},
+		labelChanged: function () {
+			this.label = 'Quote';
+		},
 	  publish: {
 	    text: {
 	      value: '',
@@ -10,12 +16,6 @@ Polymer(
 	      reflect: true
 	    }
 	  },
-		iconChanged: function () {
-			this.icon = 'editor:format-quote';
-		},
-		labelChanged: function () {
-			this.label = 'Quote';
-		},
 		ready: function () {
 			this.super();
 			this.$.content.appendChild(this.$.quoteContainer);

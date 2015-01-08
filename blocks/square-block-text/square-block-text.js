@@ -10,34 +10,6 @@ Polymer(
 	        break;
 	    }
 	  },
-	  publish: {
-	    contenteditable: {
-	      value: false,
-	      reflect: true
-	    }
-	  },
-	  toggleFormats: function () {
-	    this.$.formatsDropdown.toggle();
-	  },
-	  togglePasteAsPlainText: function () {
-	    this.$.pasteAsPlainText.toggle();
-	  },
-	  modeChanged: function () {
-	    this.super();
-
-      if (this.mode === 'edit') {
-        this.setAttribute('contenteditable', '');
-      } else {
-        this.removeAttribute('contenteditable');
-        this.$.toolbar.style.display = '';
-      }
-	  },
-		iconChanged: function () {
-			this.icon = 'text-format';
-		},
-		labelChanged: function () {
-			this.label = 'Text';
-		},
 		distanceToToolbar: function (x, y) {
 		  var new_toolbarDistance = this.super(arguments);
 
@@ -64,6 +36,28 @@ Polymer(
 
       return new_toolbarDistance;
 		},
+		iconChanged: function () {
+			this.icon = 'text-format';
+		},
+		labelChanged: function () {
+			this.label = 'Text';
+		},
+	  modeChanged: function () {
+	    this.super();
+
+      if (this.mode === 'edit') {
+        this.setAttribute('contenteditable', '');
+      } else {
+        this.removeAttribute('contenteditable');
+        this.$.toolbar.style.display = '';
+      }
+	  },
+	  publish: {
+	    contenteditable: {
+	      value: false,
+	      reflect: true
+	    }
+	  },
 		ready: function () {
 		  var that = this;
 
@@ -233,6 +227,12 @@ Polymer(
 		  clone.contenteditable = false;
 		  clone.innerHTML = this.innerHTML;
 		  return clone.outerHTML;
-		}
+		},
+	  toggleFormats: function () {
+	    this.$.formatsDropdown.toggle();
+	  },
+	  togglePasteAsPlainText: function () {
+	    this.$.pasteAsPlainText.toggle();
+	  }
 	}
 );

@@ -1,17 +1,17 @@
 Polymer(
 	{
-	  publish: {
-	    src: {
-	      value: '',
-	      reflect: true
-	    }
-	  },
 		iconChanged: function () {
 			this.icon = 'av:videocam';
 		},
 		labelChanged: function () {
 			this.label = 'Video';
 		},
+	  publish: {
+	    src: {
+	      value: '',
+	      reflect: true
+	    }
+	  },
 		ready: function () {
 			this.super();
 			this.$.content.appendChild(this.$.videoContainer);

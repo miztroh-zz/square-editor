@@ -1,5 +1,29 @@
 Polymer(
 	{
+		distanceToToolbar: function (x, y) {
+		  var rect = this.$.toolbar.parentNode.getBoundingClientRect();
+
+			var distance = this.pointPolygonDistance(
+			  [
+			    [rect.left, rect.top],
+			    [rect.right, rect.top],
+			    [rect.right, rect.bottom],
+			    [rect.left, rect.bottom]
+			  ],
+			  [x, y],
+			  'CCW'
+			);
+
+      return distance;
+		},
+		modeChanged: function () {
+			if (['edit', 'view'].indexOf(this.mode) === -1) {
+				this.mode = 'view';
+				return;
+			}
+
+			this.fire('modeChanged');
+		},
 	  pointPolygonDistance: function (polygon, point, orientation) {
     	function robustScale (e, scale) {
     	  var n = e.length;
@@ -326,14 +350,6 @@ Polymer(
     		}
     	)(polygon, point, orientation);
     },
-		modeChanged: function () {
-			if (['edit', 'view'].indexOf(this.mode) === -1) {
-				this.mode = 'view';
-				return;
-			}
-
-			this.fire('modeChanged');
-		},
 		publish: {
 		  label: {
 		    value: 'Block',
@@ -347,22 +363,6 @@ Polymer(
 				value: 'edit',
 				reflect: true
 			}
-		},
-		distanceToToolbar: function (x, y) {
-		  var rect = this.$.toolbar.parentNode.getBoundingClientRect();
-
-			var distance = this.pointPolygonDistance(
-			  [
-			    [rect.left, rect.top],
-			    [rect.right, rect.top],
-			    [rect.right, rect.bottom],
-			    [rect.left, rect.bottom]
-			  ],
-			  [x, y],
-			  'CCW'
-			);
-
-      return distance;
 		},
 		ready: function () {
 			var that = this;

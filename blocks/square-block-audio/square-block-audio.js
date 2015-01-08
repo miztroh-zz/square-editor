@@ -1,17 +1,17 @@
 Polymer(
 	{
-	  publish: {
-	    src: {
-	      value: '',
-	      reflect: true
-	    }
-	  },
 		iconChanged: function () {
 			this.icon = 'image:audiotrack';
 		},
 		labelChanged: function () {
 			this.label = 'Audio';
 		},
+	  publish: {
+	    src: {
+	      value: '',
+	      reflect: true
+	    }
+	  },
 		ready: function () {
 			this.super();
 			this.$.content.appendChild(this.$.audioContainer);
