@@ -385,11 +385,29 @@
     						  'CCW'
     						);
 
+                if (that.$.formatsDropdown.opened) {
+      					  var formatsDropdownRect = that.$.formatsDropdown.getBoundingClientRect();
+
+      						var formatsDropdownDistance = pointPolygonDistance(
+      						  [
+      						    [formatsDropdownRect.left, formatsDropdownRect.top],
+      						    [formatsDropdownRect.right, formatsDropdownRect.top],
+      						    [formatsDropdownRect.right, formatsDropdownRect.bottom],
+      						    [formatsDropdownRect.left, formatsDropdownRect.bottom]
+      						  ],
+      						  [event.pageX, event.pageY],
+      						  'CCW'
+      						);
+
+                  if (formatsDropdownDistance < new_toolbarDistance) new_toolbarDistance = formatsDropdownDistance;
+                }
+
     						if (new_toolbarDistance <= 60 && toolbarDistance > 60) {
     							that.$.toolbarAnimation.pause();
     							that.$.toolbarAnimation.direction = 'normal';
     							that.$.toolbarAnimation.play();
     						} else if (new_toolbarDistance > 60 && toolbarDistance <= 60) {
+    						  if (that.$.formatsDropdown.opened) that.$.formatsDropdown.toggle();
     							that.$.toolbarAnimation.pause();
     							that.$.toolbarAnimation.direction = 'reverse';
     							that.$.toolbarAnimation.play();
