@@ -380,60 +380,58 @@ Polymer(
 			var bottomDropletDistance = 61;
 			var toolbarDistance = 61;
 
-			document.addEventListener(
-				'mousemove',
-				function (event) {
-					if (that.mode === 'edit') {
-					  //Toolbar animation
-
+      document.addEventListener(
+        'mousemove',
+        function (event) {
+          if (that.mode === 'edit') {
+            //Toolbar animation
             var new_toolbarDistance = that.distanceToToolbar(event.pageX, event.pageY);
 
-						if (new_toolbarDistance <= 60 && toolbarDistance > 60) {
-							that.$.toolbarAnimation.pause();
-							that.$.toolbarAnimation.direction = 'normal';
-							that.$.toolbarAnimation.play();
-						} else if (new_toolbarDistance > 60 && toolbarDistance <= 60) {
-						  if (that.$.formatsDropdown.opened) that.$.formatsDropdown.toggle();
-							that.$.toolbarAnimation.pause();
-							that.$.toolbarAnimation.direction = 'reverse';
-							that.$.toolbarAnimation.play();
-						}
+            if (new_toolbarDistance <= 60 && toolbarDistance > 60) {
+              that.$.toolbarAnimation.pause();
+              that.$.toolbarAnimation.direction = 'normal';
+              that.$.toolbarAnimation.play();
+            } else if (new_toolbarDistance > 60 && toolbarDistance <= 60) {
+              that.$.toolbarAnimation.pause();
+              that.$.toolbarAnimation.direction = 'reverse';
+              that.$.toolbarAnimation.play();
+            }
 
-						toolbarDistance = new_toolbarDistance;
+            toolbarDistance = new_toolbarDistance;
 
             //Droplet animations
-						var border3Rect = that.$.border3.getBoundingClientRect();
+            var border3Rect = that.$.border3.getBoundingClientRect();
 
-						var new_topDropletDistance = parseInt(Math.abs(Math.sqrt(Math.pow(event.pageX - border3Rect.left, 2) + Math.pow(event.pageY - border3Rect.top, 2))));
+            var new_topDropletDistance = parseInt(Math.abs(Math.sqrt(Math.pow(event.pageX - border3Rect.left, 2) + Math.pow(event.pageY - border3Rect.top, 2))));
 
-						if (new_topDropletDistance <= 60 && topDropletDistance > 60) {
-							that.$.topDropletAnimation.pause();
-							that.$.topDropletAnimation.direction = 'normal';
-							that.$.topDropletAnimation.play();
-						} else if (new_topDropletDistance > 60 && topDropletDistance <= 60) {
-							that.$.topDropletAnimation.pause();
-							that.$.topDropletAnimation.direction = 'reverse';
-							that.$.topDropletAnimation.play();
-						}
+            if (new_topDropletDistance <= 60 && topDropletDistance > 60) {
+              that.$.topDropletAnimation.pause();
+              that.$.topDropletAnimation.direction = 'normal';
+              that.$.topDropletAnimation.play();
+            } else if (new_topDropletDistance > 60 && topDropletDistance <= 60) {
+              that.$.topDropletAnimation.pause();
+              that.$.topDropletAnimation.direction = 'reverse';
+              that.$.topDropletAnimation.play();
+            }
 
-						topDropletDistance = new_topDropletDistance;
+            topDropletDistance = new_topDropletDistance;
 
-						var new_bottomDropletDistance = parseInt(Math.abs(Math.sqrt(Math.pow(event.pageX - border3Rect.left, 2) + Math.pow(event.pageY - border3Rect.bottom, 2))));
+            var new_bottomDropletDistance = parseInt(Math.abs(Math.sqrt(Math.pow(event.pageX - border3Rect.left, 2) + Math.pow(event.pageY - border3Rect.bottom, 2))));
 
-						if (new_bottomDropletDistance <= 60 && bottomDropletDistance > 60) {
-							that.$.bottomDropletAnimation.pause();
-							that.$.bottomDropletAnimation.direction = 'normal';
-							that.$.bottomDropletAnimation.play();
-						} else if (new_bottomDropletDistance > 60 && bottomDropletDistance <= 60) {
-							that.$.bottomDropletAnimation.pause();
-							that.$.bottomDropletAnimation.direction = 'reverse';
-							that.$.bottomDropletAnimation.play();
-						}
+            if (new_bottomDropletDistance <= 60 && bottomDropletDistance > 60) {
+              that.$.bottomDropletAnimation.pause();
+              that.$.bottomDropletAnimation.direction = 'normal';
+              that.$.bottomDropletAnimation.play();
+            } else if (new_bottomDropletDistance > 60 && bottomDropletDistance <= 60) {
+              that.$.bottomDropletAnimation.pause();
+              that.$.bottomDropletAnimation.direction = 'reverse';
+              that.$.bottomDropletAnimation.play();
+            }
 
-						bottomDropletDistance = new_bottomDropletDistance;
-					}
-				}
-			);
+            bottomDropletDistance = new_bottomDropletDistance;
+          }
+        }
+      );
 
 			this.$.matting.addEventListener(
 				'click',
