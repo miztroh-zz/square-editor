@@ -38,6 +38,32 @@ Polymer(
 		labelChanged: function () {
 			this.label = 'Text';
 		},
+		distanceToToolbar: function (x, y) {
+		  var new_toolbarDistance = this.super(arguments);
+
+      if (this.$.formatsDropdown.opened) {
+			  var formatsDropdownRect = this.$.formatsDropdown.getBoundingClientRect();
+
+				var formatsDropdownDistance = this.pointPolygonDistance(
+				  [
+				    [formatsDropdownRect.left, formatsDropdownRect.top],
+				    [formatsDropdownRect.right, formatsDropdownRect.top],
+				    [formatsDropdownRect.right, formatsDropdownRect.bottom],
+				    [formatsDropdownRect.left, formatsDropdownRect.bottom]
+				  ],
+				  [x, y],
+				  'CCW'
+				);
+
+        if (formatsDropdownDistance < new_toolbarDistance) new_toolbarDistance = formatsDropdownDistance;
+
+        if (new_toolbarDistance > 60) {
+          this.$.formatsDropdown.opened = false;
+        }
+      }
+
+      return new_toolbarDistance;
+		},
 		ready: function () {
 		  var that = this;
 

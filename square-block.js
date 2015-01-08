@@ -1,6 +1,6 @@
-(
-  function () {
-    var pointPolygonDistance = function (polygon, point, orientation) {
+Polymer(
+	{
+	  pointPolygonDistance: function (polygon, point, orientation) {
     	function robustScale (e, scale) {
     	  var n = e.length;
 
@@ -325,180 +325,164 @@
     		  return dist;
     		}
     	)(polygon, point, orientation);
-    };
+    },
+		modeChanged: function () {
+			if (['edit', 'view'].indexOf(this.mode) === -1) {
+				this.mode = 'view';
+				return;
+			}
 
-    Polymer(
-    	{
-    		modeChanged: function () {
-    			if (['edit', 'view'].indexOf(this.mode) === -1) {
-    				this.mode = 'view';
-    				return;
-    			}
+			this.fire('modeChanged');
+		},
+		publish: {
+		  label: {
+		    value: 'Block',
+		    reflect: true
+		  },
+		  tile: {
+		    value: 'square-tile',
+		    reflect: true
+		  },
+			mode: {
+				value: 'edit',
+				reflect: true
+			}
+		},
+		distanceToToolbar: function (x, y) {
+		  var rect = this.$.toolbar.parentNode.getBoundingClientRect();
 
-    			this.fire('modeChanged');
-    		},
-    		publish: {
-    		  label: {
-    		    value: 'Block',
-    		    reflect: true
-    		  },
-    		  tile: {
-    		    value: 'square-tile',
-    		    reflect: true
-    		  },
-    			mode: {
-    				value: 'edit',
-    				reflect: true
-    			}
-    		},
-    		ready: function () {
-    			var that = this;
+			var distance = this.pointPolygonDistance(
+			  [
+			    [rect.left, rect.top],
+			    [rect.right, rect.top],
+			    [rect.right, rect.bottom],
+			    [rect.left, rect.bottom]
+			  ],
+			  [x, y],
+			  'CCW'
+			);
 
-    			this.addEventListener(
-    				'trackstart',
-    				function (event) {
-    					if (this.mode === 'edit' && Array.prototype.indexOf.call(event.path, this.$.toolbarLabel) === -1) {
-    						event.stopPropagation();
-    					}
-    				}
-    			);
+      return distance;
+		},
+		ready: function () {
+			var that = this;
 
-    			var topDropletDistance = 61;
-    			var bottomDropletDistance = 61;
-    			var toolbarDistance = 61;
+			this.addEventListener(
+				'trackstart',
+				function (event) {
+					if (this.mode === 'edit' && Array.prototype.indexOf.call(event.path, this.$.toolbarLabel) === -1) {
+						event.stopPropagation();
+					}
+				}
+			);
 
-    			document.addEventListener(
-    				'mousemove',
-    				function (event) {
-    					if (that.mode === 'edit') {
-    					  //Toolbar animation
-    					  var toolbarRect = that.$.toolbar.parentNode.getBoundingClientRect();
+			var topDropletDistance = 61;
+			var bottomDropletDistance = 61;
+			var toolbarDistance = 61;
 
-    						var new_toolbarDistance = pointPolygonDistance(
-    						  [
-    						    [toolbarRect.left, toolbarRect.top],
-    						    [toolbarRect.right, toolbarRect.top],
-    						    [toolbarRect.right, toolbarRect.bottom],
-    						    [toolbarRect.left, toolbarRect.bottom]
-    						  ],
-    						  [event.pageX, event.pageY],
-    						  'CCW'
-    						);
+			document.addEventListener(
+				'mousemove',
+				function (event) {
+					if (that.mode === 'edit') {
+					  //Toolbar animation
 
-                if (that.$.formatsDropdown.opened) {
-      					  var formatsDropdownRect = that.$.formatsDropdown.getBoundingClientRect();
+            var new_toolbarDistance = that.distanceToToolbar(event.pageX, event.pageY);
 
-      						var formatsDropdownDistance = pointPolygonDistance(
-      						  [
-      						    [formatsDropdownRect.left, formatsDropdownRect.top],
-      						    [formatsDropdownRect.right, formatsDropdownRect.top],
-      						    [formatsDropdownRect.right, formatsDropdownRect.bottom],
-      						    [formatsDropdownRect.left, formatsDropdownRect.bottom]
-      						  ],
-      						  [event.pageX, event.pageY],
-      						  'CCW'
-      						);
+						if (new_toolbarDistance <= 60 && toolbarDistance > 60) {
+							that.$.toolbarAnimation.pause();
+							that.$.toolbarAnimation.direction = 'normal';
+							that.$.toolbarAnimation.play();
+						} else if (new_toolbarDistance > 60 && toolbarDistance <= 60) {
+						  if (that.$.formatsDropdown.opened) that.$.formatsDropdown.toggle();
+							that.$.toolbarAnimation.pause();
+							that.$.toolbarAnimation.direction = 'reverse';
+							that.$.toolbarAnimation.play();
+						}
 
-                  if (formatsDropdownDistance < new_toolbarDistance) new_toolbarDistance = formatsDropdownDistance;
-                }
+						toolbarDistance = new_toolbarDistance;
 
-    						if (new_toolbarDistance <= 60 && toolbarDistance > 60) {
-    							that.$.toolbarAnimation.pause();
-    							that.$.toolbarAnimation.direction = 'normal';
-    							that.$.toolbarAnimation.play();
-    						} else if (new_toolbarDistance > 60 && toolbarDistance <= 60) {
-    						  if (that.$.formatsDropdown.opened) that.$.formatsDropdown.toggle();
-    							that.$.toolbarAnimation.pause();
-    							that.$.toolbarAnimation.direction = 'reverse';
-    							that.$.toolbarAnimation.play();
-    						}
+            //Droplet animations
+						var border3Rect = that.$.border3.getBoundingClientRect();
 
-    						toolbarDistance = new_toolbarDistance;
+						var new_topDropletDistance = parseInt(Math.abs(Math.sqrt(Math.pow(event.pageX - border3Rect.left, 2) + Math.pow(event.pageY - border3Rect.top, 2))));
 
-                //Droplet animations
-    						var border3Rect = that.$.border3.getBoundingClientRect();
+						if (new_topDropletDistance <= 60 && topDropletDistance > 60) {
+							that.$.topDropletAnimation.pause();
+							that.$.topDropletAnimation.direction = 'normal';
+							that.$.topDropletAnimation.play();
+						} else if (new_topDropletDistance > 60 && topDropletDistance <= 60) {
+							that.$.topDropletAnimation.pause();
+							that.$.topDropletAnimation.direction = 'reverse';
+							that.$.topDropletAnimation.play();
+						}
 
-    						var new_topDropletDistance = parseInt(Math.abs(Math.sqrt(Math.pow(event.pageX - border3Rect.left, 2) + Math.pow(event.pageY - border3Rect.top, 2))));
+						topDropletDistance = new_topDropletDistance;
 
-    						if (new_topDropletDistance <= 60 && topDropletDistance > 60) {
-    							that.$.topDropletAnimation.pause();
-    							that.$.topDropletAnimation.direction = 'normal';
-    							that.$.topDropletAnimation.play();
-    						} else if (new_topDropletDistance > 60 && topDropletDistance <= 60) {
-    							that.$.topDropletAnimation.pause();
-    							that.$.topDropletAnimation.direction = 'reverse';
-    							that.$.topDropletAnimation.play();
-    						}
+						var new_bottomDropletDistance = parseInt(Math.abs(Math.sqrt(Math.pow(event.pageX - border3Rect.left, 2) + Math.pow(event.pageY - border3Rect.bottom, 2))));
 
-    						topDropletDistance = new_topDropletDistance;
+						if (new_bottomDropletDistance <= 60 && bottomDropletDistance > 60) {
+							that.$.bottomDropletAnimation.pause();
+							that.$.bottomDropletAnimation.direction = 'normal';
+							that.$.bottomDropletAnimation.play();
+						} else if (new_bottomDropletDistance > 60 && bottomDropletDistance <= 60) {
+							that.$.bottomDropletAnimation.pause();
+							that.$.bottomDropletAnimation.direction = 'reverse';
+							that.$.bottomDropletAnimation.play();
+						}
 
-    						var new_bottomDropletDistance = parseInt(Math.abs(Math.sqrt(Math.pow(event.pageX - border3Rect.left, 2) + Math.pow(event.pageY - border3Rect.bottom, 2))));
+						bottomDropletDistance = new_bottomDropletDistance;
+					}
+				}
+			);
 
-    						if (new_bottomDropletDistance <= 60 && bottomDropletDistance > 60) {
-    							that.$.bottomDropletAnimation.pause();
-    							that.$.bottomDropletAnimation.direction = 'normal';
-    							that.$.bottomDropletAnimation.play();
-    						} else if (new_bottomDropletDistance > 60 && bottomDropletDistance <= 60) {
-    							that.$.bottomDropletAnimation.pause();
-    							that.$.bottomDropletAnimation.direction = 'reverse';
-    							that.$.bottomDropletAnimation.play();
-    						}
+			this.$.matting.addEventListener(
+				'click',
+				function (event) {
+					if (that.mode === 'edit') {
+						if (event.target === that.$.topDroplet) that.fire('insertAbove');
+						if (event.target === that.$.bottomDroplet) that.fire('insertBelow');
+					}
+				}
+			);
 
-    						bottomDropletDistance = new_bottomDropletDistance;
-    					}
-    				}
-    			);
+			this.$.matting.addEventListener(
+				'mouseover',
+				function (event) {
+					if (that.mode === 'edit') {
+						if (event.target === that.$.topDroplet) this.setAttribute('topDroplet', '');
+						if (event.target === that.$.bottomDroplet) this.setAttribute('bottomDroplet', '');
+					}
+				}
+			);
 
-    			this.$.matting.addEventListener(
-    				'click',
-    				function (event) {
-    					if (that.mode === 'edit') {
-    						if (event.target === that.$.topDroplet) that.fire('insertAbove');
-    						if (event.target === that.$.bottomDroplet) that.fire('insertBelow');
-    					}
-    				}
-    			);
+			this.$.matting.addEventListener(
+				'mouseout',
+				function (event) {
+					if (that.mode === 'edit') {
+						if (event.target === that.$.topDroplet) this.removeAttribute('topDroplet');
+						if (event.target === that.$.bottomDroplet) this.removeAttribute('bottomDroplet');
+					}
+				}
+			);
 
-    			this.$.matting.addEventListener(
-    				'mouseover',
-    				function (event) {
-    					if (that.mode === 'edit') {
-    						if (event.target === that.$.topDroplet) this.setAttribute('topDroplet', '');
-    						if (event.target === that.$.bottomDroplet) this.setAttribute('bottomDroplet', '');
-    					}
-    				}
-    			);
+      this.addEventListener(
+        'dblclick',
+        function (event) {
+          if (this.mode === 'edit' && Array.prototype.indexOf.call(event.path, this.$.border3) >= 0) {
+            this.showOptions();
+          }
+        }
+      );
 
-    			this.$.matting.addEventListener(
-    				'mouseout',
-    				function (event) {
-    					if (that.mode === 'edit') {
-    						if (event.target === that.$.topDroplet) this.removeAttribute('topDroplet');
-    						if (event.target === that.$.bottomDroplet) this.removeAttribute('bottomDroplet');
-    					}
-    				}
-    			);
-
-          this.addEventListener(
-            'dblclick',
-            function (event) {
-              if (this.mode === 'edit' && Array.prototype.indexOf.call(event.path, this.$.border3) >= 0) {
-                this.showOptions();
-              }
-            }
-          );
-
-    			this.modeChanged();
-    		},
-    		save: function () {
-    		  var clone = this.cloneNode();
-    		  clone.mode = 'view';
-    		  clone.innerHTML = this.innerHTML;
-    		  return clone.outerHTML;
-    		},
-    		showOptions: function() {
-    		}
-    	}
-    );
-  }
-)();
+			this.modeChanged();
+		},
+		save: function () {
+		  var clone = this.cloneNode();
+		  clone.mode = 'view';
+		  clone.innerHTML = this.innerHTML;
+		  return clone.outerHTML;
+		},
+		showOptions: function() {
+		}
+	}
+);
