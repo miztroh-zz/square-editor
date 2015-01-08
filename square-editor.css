@@ -24,6 +24,10 @@
   color: #222;
 }
 
+:host #mounting > core-header-panel core-toolbar paper-icon-button.danger:hover {
+  color: #F0523D;
+}
+
 :host #blockChooser {
 	min-width: 100px;
 	min-height: 100px;

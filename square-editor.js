@@ -308,13 +308,13 @@
 						  document.body.style.overflow = 'hidden';
 							this.$.fullscreenAnimation.direction = 'normal';
 							this.$.fullscreenIcon.icon = 'fullscreen-exit';
-							this.$.fullscreenIcon.parentNode.setAttribute('title', 'Exit Fullscreen');
+							this.$.fullscreenIcon.setAttribute('title', 'Exit Fullscreen');
 							break;
 						case 'normal':
 						  document.body.style.overflow = '';
 							this.$.fullscreenAnimation.direction = 'reverse';
 							this.$.fullscreenIcon.icon = 'fullscreen';
-							this.$.fullscreenIcon.parentNode.setAttribute('title', 'Enter Fullscreen');
+							this.$.fullscreenIcon.setAttribute('title', 'Enter Fullscreen');
 							break;
 					}
 
@@ -324,12 +324,12 @@
   		    switch (this.mode) {
   			    case 'edit':
   			      this.$.modeIcon.icon = 'create';
-  						this.$.modeIcon.parentNode.setAttribute('title', 'Edit');
+  						this.$.modeIcon.setAttribute('title', 'Edit');
   						this.mode = 'view';
   			      break;
   			    case 'view':
   			      this.$.modeIcon.icon = 'visibility';
-  						this.$.modeIcon.parentNode.setAttribute('title', 'Preview');
+  						this.$.modeIcon.setAttribute('title', 'Preview');
   						this.mode = 'edit';
   			      break;
   			  }
