@@ -1,0 +1,14 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="/bower_components/core-icon/core-icon.html">
+<link rel="import" href="/bower_components/core-icons/image-icons.html">
+<link rel="import" href="square-icons.html">
+<polymer-element name="square-tile" square-tile>
+  <template>
+    <link rel="stylesheet" href="square-tile.css">
+		<div vertical center layout id="layout">
+			<core-icon icon="{{icon}}" id="icon"></core-icon>
+			<label id="label">{{label}}</label>
+		</div>
+	</template>
+	<script src="square-tile.js"></script>
+</polymer-element>

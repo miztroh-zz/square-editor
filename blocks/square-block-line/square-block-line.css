@@ -1,0 +1,7 @@
+:host::shadow #lineContainer hr {
+  border: 0;
+  background: #bbbbbb;
+  height: 1px;
+  padding: 0;
+  margin: 0;
+}

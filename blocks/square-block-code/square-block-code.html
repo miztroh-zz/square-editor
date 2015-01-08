@@ -1,26 +1,26 @@
 <link rel="import" href="/bower_components/polymer/polymer.html">
 <link rel="import" href="../../square-block.html">
-<link rel="import" href="/bower_components/paper-dialog/paper-action-dialog.html">
+<link rel="import" href="../../square-dialog.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-input/paper-input.html">
 <link rel="import" href="/bower_components/paper-input/paper-autogrow-textarea.html">
-<link rel="import" href="../../square-icons.html">
-<polymer-element name="square-block-code" extends="square-block" label="Code" icon="square-editor:code-block">
+<polymer-element name="square-block-code" extends="square-block" label="Code" tile="square-tile-code">
   <template>
+    <link rel="stylesheet" href="square-block-code.css">
   	<shadow></shadow>
   	<div id="codeContainer">
-  	  <pre><code style="tab-size: 3;">{{code}}</code></pre>
+  	  <pre><code>{{code}}</code></pre>
   	</div>
-  	<paper-action-dialog heading="Code" id="dialog" backdrop>
+  	<square-dialog heading="Code" id="dialog">
       <paper-input-decorator style="width: 600px;">
   	    <paper-autogrow-textarea>
   	      <textarea id="codeInput" style="tab-size: 3;"></textarea>
   	    </paper-autogrow-textarea>
       </paper-input-decorator>
-  	  <paper-button dismissive id="remove" style="background: #d9534f; color: white;">Remove</paper-button>
-  	  <paper-button dismissive id="cancel" style="background: #f0ad4e; color: white;">Cancel</paper-button>
-  	  <paper-button affirmative id="save" style="background: #337ab7; color: white;">Save</paper-button>
-  	</paper-action-dialog>
+  	  <paper-button dismissive id="cancel">Cancel</paper-button>
+  	  <paper-button dismissive id="remove" class="danger">Remove</paper-button>
+  	  <paper-button affirmative id="save">Save</paper-button>
+  	</square-dialog>
   </template>
 	<script src="square-block-code.js"></script>
 </polymer-element>

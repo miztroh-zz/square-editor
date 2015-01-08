@@ -12,6 +12,7 @@
 	text-transform: uppercase;
 	color: #3E3E3E;
 	text-align: center;
+	font-size: 11px;
 }
 
 :host([mode="search"]) #label {
@@ -23,10 +24,10 @@
 	max-width: 400px;
 }
 
-:host([mode="search"])::shadow ::content [square-block] {
+:host([mode="search"])::shadow ::content [square-tile] {
   display: none;
 }
 
-:host([mode="search"])::shadow ::content [square-block][search-result] {
+:host([mode="search"])::shadow ::content [square-tile][search-result] {
   display: inline-block;
 }

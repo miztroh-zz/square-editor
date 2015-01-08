@@ -1,15 +1,50 @@
 <link rel="import" href="/bower_components/polymer/polymer.html">
 <link rel="import" href="../../square-block.html">
+<link rel="import" href="../../square-dialog.html">
+<link rel="import" href="/bower_components/paper-button/paper-button.html">
+<link rel="import" href="/bower_components/paper-input/paper-input.html">
+<link rel="import" href="/bower_components/paper-input/paper-autogrow-textarea.html">
 <link rel="import" href="/bower_components/core-icons/core-icons.html">
-<polymer-element name="square-block-text" extends="square-block" label="Text" icon="text-format">
+<link rel="import" href="/bower_components/core-icons/editor-icons.html">
+<link rel="import" href="/bower_components/core-icon/core-icon.html">
+<link rel="import" href="/bower_components/core-dropdown-menu/core-dropdown-menu.html">
+<link rel="import" href="/bower_components/core-dropdown/core-dropdown.html">
+<link rel="import" href="/bower_components/core-menu/core-menu.html">
+<polymer-element name="square-block-text" extends="square-block" label="Text" tile="square-tile-text">
   <template>
-    <style>
-      :host::shadow #textContainer {
-        outline: none;
-      }
-    </style>
+    <link rel="stylesheet" href="square-block-text.css">
   	<shadow></shadow>
-  	<div id="textContainer">Write here...</div>
+  	<div id="tools">
+      <div class="button" data-command-name="undo" title="Undo"><core-icon icon="undo"></core-icon></div>
+      <div class="button" data-command-name="redo" title="Redo"><core-icon icon="redo"></core-icon></div>
+      <div class="button" data-command-name="bold" title="Bold"><core-icon icon="editor:format-bold"></core-icon></div>
+      <div class="button" data-command-name="italic" title="Italic"><core-icon icon="editor:format-italic"></core-icon></div>
+      <div class="button" data-command-name="linkPrompt" title="Insert Link"><core-icon icon="editor:insert-link"></core-icon></div>
+      <div class="button" data-command-name="justifyLeft" title="Align Left"><core-icon icon="editor:format-align-left"></core-icon></div>
+      <div class="button" data-command-name="justifyCenter" title="Align Center"><core-icon icon="editor:format-align-center"></core-icon></div>
+      <div class="button" data-command-name="justifyRight" title="Align Right"><core-icon icon="editor:format-align-right"></core-icon></div>
+      <div class="button" id="formatsButton" title="Format Text" on-click="{{toggleFormats}}"><core-icon icon="text-format"></core-icon></div>
+      <core-dropdown relatedTarget="{{$.formatsButton}}" id="formatsDropdown">
+        <core-menu valueattr="label" selected="Paragraph">
+          <div class="button" data-command-name="p" label="Paragraph">Paragraph</div>
+          <div class="button" data-command-name="h1" label="Heading 1"><h1>Heading 1</h1></div>
+          <div class="button" data-command-name="h2" label="Heading 2"><h2>Heading 2</h2></div>
+          <div class="button" data-command-name="h3" label="Heading 3"><h3>Heading 3</h3></div>
+        </core-menu>
+      </core-dropdown>
+      <div class="button" data-command-name="insertOrderedList" title="Ordered List"><core-icon icon="editor:format-list-numbered"></core-icon></div>
+      <div class="button" data-command-name="insertUnorderedList" title="Unordered List"><core-icon icon="editor:format-list-bulleted"></core-icon></div>
+      <div class="button" data-command-name="outdent" title="Outdent"><core-icon icon="editor:format-indent-decrease"></core-icon></div>
+      <div class="button" data-command-name="indent" title="Indent"><core-icon icon="editor:format-indent-increase"></core-icon></div>
+      <div class="button" on-click="{{togglePasteAsPlainText}}" title="Paste as Plain Text"><core-icon icon="content-paste"></core-icon></div>
+      <div class="button" data-command-name="removeFormat" title="Remove Formatting"><core-icon icon="editor:format-clear"></core-icon></div>
+  	</div>
+  	<square-dialog heading="Paste as Plain Text" id="pasteAsPlainText">
+	    <textarea id="plainTextInput" style="tab-size: 3; min-height: 200px; width: 600px; min-width: 600px; max-width: 600px; outline: none; font-family: inherit; font-size: inherit; border: 0; padding: 20px;"></textarea>
+  	  <paper-button dismissive id="plainTextCancel">Cancel</paper-button>
+  	  <paper-button affirmative id="plainTextPaste">Paste</paper-button>
+  	</square-dialog>
   </template>
+	<script src="/bower_components/requirejs/require.js"></script>
 	<script src="square-block-text.js"></script>
 </polymer-element>

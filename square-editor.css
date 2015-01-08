@@ -1,6 +1,7 @@
 :host {
 	display: block;
 	min-height: 400px;
+	position: relative;
 }
 
 :host #mounting {
@@ -11,12 +12,19 @@
 	margin: 0 auto;
 }
 
-:host #mounting > core-header-panel > core-toolbar {
-  background: #e4e4e4;
+:host #mounting > core-header-panel core-toolbar {
+  background: transparent;
+}
+
+:host #mounting > core-header-panel core-toolbar paper-icon-button {
+  color: #ccc;
+}
+
+:host #mounting > core-header-panel core-toolbar paper-icon-button:hover {
+  color: #222;
 }
 
 :host #blockChooser {
-	font-size: 11px;
 	min-width: 100px;
 	min-height: 100px;
 }
@@ -55,12 +63,18 @@
 	display: none;
 }
 
-:host #fab {
+:host #fabMounting {
 	position: absolute;
 	bottom: -110px;
 	opacity: 0;
+	width: 100%;
+}
+
+:host #fab {
 	background: black;
 	pointer-events: all;
+	margin: 0px auto;
+	display: block;
 }
 
 :host #sizing > core-toolbar {

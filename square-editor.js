@@ -60,7 +60,7 @@
 
               for (i = 0; i < categories.length; i += 1) {
                 categories[i].mode = 'view';
-                blocks = categories[i].querySelectorAll('[square-block]');
+                blocks = categories[i].querySelectorAll('[square-tile]');
 
                 for (j = 0; j < blocks.length; j += 1) {
                   blocks[j].removeAttribute('search-result');
@@ -77,7 +77,7 @@
               if (this.value.length === 0) {
                 for (i = 0; i < categories.length; i += 1) {
                   categories[i].mode = 'view';
-                  blocks = categories[i].querySelectorAll('[square-block]');
+                  blocks = categories[i].querySelectorAll('[square-tile]');
 
                   for (j = 0; j < blocks.length; j += 1) {
                     blocks[j].removeAttribute('search-result');
@@ -86,7 +86,7 @@
               } else {
                 for (i = 0; i < categories.length; i += 1) {
                   categories[i].mode = 'search';
-                  blocks = categories[i].querySelectorAll('[square-block]');
+                  blocks = categories[i].querySelectorAll('[square-tile]');
 
                   for (j = 0; j < blocks.length; j += 1) {
                     if (blocks[j].label.toLowerCase().indexOf(this.value.toLowerCase()) >= 0) {
@@ -128,7 +128,7 @@
 
 					if (!styleAdded) {
 						styleAdded = true;
-						var css = 'core-drag-avatar.square-editor {z-index: 10; margin: -50px 0 0 -50px; opacity: 0.7;} core-drag-avatar.square-editor > paper-shadow {cursor: pointer;};';
+						var css = 'core-drag-avatar.square-editor {z-index: 10; margin: -50px 0 0 -50px; opacity: 0.7; pointer-events: all;} core-drag-avatar.square-editor > paper-shadow {background: white; cursor: move; cursor: url(closedhand.cur), move; cursor: url(closedhand.cur) 4 4, move;}';
 						var style = document.createElement('style');
 						if (style.styleSheet) style.styleSheet.cssText = css;
 						else style.appendChild(document.createTextNode(css));
@@ -162,55 +162,18 @@
 					this.$.blockChooser.addEventListener(
 						'click',
 						function (event) {
-							if (event.target.hasAttribute('square-block')) {
+							if (event.target.hasAttribute('square-tile')) {
 								that.$.blockChooser.opened = false;
-                var clone = event.target.cloneNode();
-								clone.mode = 'edit';
-								that.insertBefore(clone, insertBefore);
-								clone.showOptions();
+                var block = document.createElement(event.target.block);
+								block.mode = 'edit';
+								that.insertBefore(block, insertBefore);
+								block.showOptions();
 							}
-						}
-					);
-
-					this.$.fab.addEventListener(
-						'mouseover',
-						function () {
-							that.$.fabBackgroundAnimation.pause();
-							that.$.fabBackgroundAnimation.direction = 'normal';
-							that.$.fabBackgroundAnimation.play();
-						}
-					);
-
-					this.$.fab.addEventListener(
-						'mouseout',
-						function () {
-							that.$.fabBackgroundAnimation.pause();
-							that.$.fabBackgroundAnimation.direction = 'reverse';
-							that.$.fabBackgroundAnimation.play();
 						}
 					);
 
 					var shadow = document.createElement('paper-shadow');
 					shadow.setAttribute('z', '5');
-
-					var add = document.createElement('div');
-					add.style.cssText = 'color: #636363; padding: 15px; width: 70px; height: 70px; background: white;';
-					shadow.appendChild(add);
-
-					var layout = document.createElement('div');
-					layout.setAttribute('vertical', '');
-					layout.setAttribute('center', '');
-					layout.setAttribute('layout', '');
-					layout.style.cssText = 'overflow: hidden; max-width: 100%; max-height: 100%;';
-					add.appendChild(layout);
-
-					var icon = document.createElement('core-icon');
-					icon.style.cssText = 'width: 50px; height: 50px;';
-					layout.appendChild(icon);
-
-					var label = document.createElement('label');
-					layout.style.cssText = 'font-family: RobotoDraft; font-size: 11px;';
-					layout.appendChild(label);
 
 					this.$.blocks.addEventListener(
 						'drag-start',
@@ -220,10 +183,9 @@
 								that.$.blockChooser.opened = false;
 								event.detail.avatar.innerHTML = '';
 								event.detail.avatar.classList.toggle('square-editor', true);
+								shadow.innerHTML = '';
+								shadow.appendChild(document.createElement(event.detail.event.target.tile));
 								event.detail.avatar.appendChild(shadow);
-								icon.icon = event.detail.event.target.icon;
-								label.innerHTML = '';
-								label.innerText = event.detail.event.target.label;
 								that.$.blocks.style.pointerEvents = 'none';
 
 								event.detail.drag = function (event) {
@@ -241,20 +203,48 @@
 								event.detail.event.target.style.display = 'none';
 								event.detail.avatar.innerHTML = '';
 								event.detail.avatar.classList.toggle('square-editor', true);
+								shadow.innerHTML = '';
+								shadow.appendChild(document.createElement(event.detail.event.target.tile));
 								event.detail.avatar.appendChild(shadow);
-								icon.icon = event.detail.event.target.icon;
-								label.innerHTML = '';
-								label.innerText = event.detail.event.target.label;
 								that.$.fabPositionAnimation.pause();
 								that.$.fabPositionAnimation.direction = 'normal';
 								that.$.fabPositionAnimation.play();
 								that.$.mounting.style.overflow = 'hidden';
 								that.$.blocks.style.pointerEvents = 'none';
 
-								event.detail.drag = function (event) {
+                var old_target = that.$.mounting.querySelector('core-header-panel');
+
+								event.detail.drag = function (e) {
+								  event.detail.avatar.style.pointerEvents = 'none';
+								  var target = that.shadowRoot.elementFromPoint(e.event.pageX, e.event.pageY);
+								  event.detail.avatar.style.pointerEvents = 'all';
+
+                  if (target !== old_target) {
+                    old_target = target;
+        						that.$.fabBackgroundAnimation.pause();
+
+  								  if (target === that.$.fab) {
+        							that.$.fabBackgroundAnimation.direction = 'normal';
+  								  } else {
+        							that.$.fabBackgroundAnimation.direction = 'reverse';
+  								  }
+
+        						that.$.fabBackgroundAnimation.play();
+								  }
 								};
 
+                var disableContextMenu = function (e) {
+                  e.stopPropagation();
+                  e.preventDefault();
+                  event.detail.drop(event.detail);
+                  return false;
+                };
+
+                event.detail.avatar.addEventListener('contextmenu', disableContextMenu);
+
 								event.detail.drop = function (event) {
+                  event.avatar.removeEventListener('contextmenu', disableContextMenu);
+
 									that.$.blocks.style.pointerEvents = '';
 									that.$.mounting.style.overflow = '';
 
@@ -278,10 +268,21 @@
 									that.$.fabPositionAnimation.pause();
 									that.$.fabPositionAnimation.direction = 'reverse';
 									that.$.fabPositionAnimation.play();
+    							that.$.fabBackgroundAnimation.cancel();
+    							old_target = that.$.mounting.querySelector('core-header-panel');
 								};
 							}
 						}
 					);
+				},
+				save: function () {
+				  var html = '', nodes = this.$.blocks.querySelector('content').getDistributedNodes();
+
+          for (var i = 0; i < nodes.length; i += 1) {
+            html += nodes[i].save();
+          }
+
+          return html;
 				},
 				toggleFullscreen: function () {
 			    this.$.fullscreenAnimation.finish();

@@ -7,7 +7,10 @@ Polymer(
 			this.label = 'Code';
 		},
 		publish: {
-		  code: '',
+		  code: {
+		    value: '',
+		    reflect: true
+		  },
 		},
 		ready: function () {
 			this.super();

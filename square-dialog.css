@@ -1,0 +1,48 @@
+:host {
+  background: #f2f2f2;
+  border: 1px solid #D0D0D0;
+}
+
+:host::shadow h1 {
+  padding: 24px;
+  font-size: 12px;
+  text-transform: uppercase;
+  border-bottom: 1px solid #D0D0D0;
+}
+
+:host::shadow #actions {
+  padding: 0;
+  border-top: 1px solid #D0D0D0;
+  margin-top: 24px;
+}
+
+:host::shadow #actions div[flex] {
+  display: none;
+}
+
+:host::shadow ::content paper-button {
+  margin: 0;
+  border-radius: 0;
+  -ms-flex: 1 1 0.000000001px;
+  -webkit-flex: 1;
+  flex: 1;
+  -webkit-flex-basis: 0.000000001px;
+  flex-basis: 0.000000001px;
+}
+
+:host::shadow ::content paper-button:hover {
+  background: white;
+}
+
+:host::shadow ::content paper-button.danger:hover {
+  background: #F0523D;
+  color: white;
+}
+
+:host::shadow ::content paper-button:nth-of-type(n+2)::shadow .button-content {
+  border-left: 1px solid #D0D0D0;
+}
+
+:host::shadow #scroller {
+  overflow-x: hidden;
+}

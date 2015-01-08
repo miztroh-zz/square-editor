@@ -1,7 +1,10 @@
 Polymer(
 	{
 	  publish: {
-	    src: ''
+	    src: {
+	      value: '',
+	      reflect: true
+	    }
 	  },
 		iconChanged: function () {
 			this.icon = 'av:videocam';

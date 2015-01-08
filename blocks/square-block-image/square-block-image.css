@@ -1,0 +1,4 @@
+:host::shadow #imageContainer core-image,
+:host::shadow #imageContainer core-image::shadow img {
+  max-width: 100%;
+}

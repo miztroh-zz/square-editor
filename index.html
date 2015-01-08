@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
+	  <meta charset="UTF-8">
 		<title>Square Editor</title>
 		<script src="/bower_components/webcomponentsjs/webcomponents.min.js"></script>
 		<link rel="import" href="/bower_components/font-roboto/roboto.html">
@@ -12,19 +13,19 @@
 		</style>
 	</head>
 	<body fullbleed unresolved style="background: #ebebeb;">
-		<div style="width: 600px; margin: 0 auto 0 auto; height: 100%;">
+		<div style="max-width: 760px; margin: 0 auto 0 auto; height: 100%;">
 			<square-editor mode="edit">
 				<square-block-text mode="edit"></square-block-text>
 				<square-category label="Basic">
-					<square-block-text></square-block-text>
-					<square-block-quote></square-block-quote>
-					<square-block-image></square-block-image>
-					<square-block-audio></square-block-audio>
-					<square-block-video></square-block-video>
+					<square-tile-text></square-tile-text>
+					<square-tile-quote></square-tile-quote>
+					<square-tile-image></square-tile-image>
+					<square-tile-audio></square-tile-audio>
+					<square-tile-video></square-tile-video>
 				</square-category>
 				<square-category label="More">
-					<square-block-line></square-block-line>
-					<square-block-code></square-block-code>
+					<square-tile-line></square-tile-line>
+					<square-tile-code></square-tile-code>
 				</square-category>
 			</square-editor>
 		</div>

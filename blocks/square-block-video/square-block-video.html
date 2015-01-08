@@ -1,27 +1,22 @@
 <link rel="import" href="/bower_components/polymer/polymer.html">
 <link rel="import" href="../../square-block.html">
-<link rel="import" href="/bower_components/paper-dialog/paper-action-dialog.html">
+<link rel="import" href="../../square-dialog.html">
 <link rel="import" href="/bower_components/paper-button/paper-button.html">
 <link rel="import" href="/bower_components/paper-input/paper-input.html">
-<link rel="import" href="/bower_components/core-icons/av-icons.html">
-<polymer-element name="square-block-video" extends="square-block" label="Video" icon="av:videocam">
+<polymer-element name="square-block-video" extends="square-block" label="Video" tile="square-tile-video">
   <template>
-    <style>
-      :host::shadow #videoContainer video {
-        width: 100%;
-      }
-    </style>
+   <link rel="stylesheet" href="square-block-video.css">
   	<shadow></shadow>
   	<div id="videoContainer">
   	  <template if="{{src.length > 0}}"><video src="{{src}}" controls></video></template>
   	</div>
-  	<paper-action-dialog heading="Video" id="dialog" backdrop>
+  	<square-dialog heading="Video" id="dialog">
   	  <label>Source</label>
   	  <paper-input id="srcInput" style="display: block; width: 300px;"></paper-input>
-  	  <paper-button dismissive id="remove" style="background: #d9534f; color: white;">Remove</paper-button>
-  	  <paper-button dismissive id="cancel" style="background: #f0ad4e; color: white;">Cancel</paper-button>
-  	  <paper-button affirmative id="save" style="background: #337ab7; color: white;">Save</paper-button>
-  	</paper-action-dialog>
+  	  <paper-button dismissive id="cancel">Cancel</paper-button>
+  	  <paper-button dismissive id="remove" class="danger">Remove</paper-button>
+  	  <paper-button affirmative id="save">Save</paper-button>
+  	</square-dialog>
   </template>
 	<script src="square-block-video.js"></script>
 </polymer-element>

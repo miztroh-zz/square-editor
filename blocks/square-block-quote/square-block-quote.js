@@ -1,8 +1,14 @@
 Polymer(
 	{
 	  publish: {
-	    text: '',
-	    attribution: ''
+	    text: {
+	      value: '',
+	      reflect: true
+	    },
+	    attribution: {
+	      value: '',
+	      reflect: true
+	    }
 	  },
 		iconChanged: function () {
 			this.icon = 'editor:format-quote';

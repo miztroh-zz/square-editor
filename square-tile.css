@@ -1,0 +1,28 @@
+:host {
+  display: block;
+}
+
+:host #layout {
+	overflow: hidden;
+	color: #636363;
+	padding: 15px;
+	width: 70px;
+	height: 70px;
+}
+
+:host #layout:hover {
+	color: #313131;
+	cursor: pointer;
+	background: #f5f5f5;
+}
+
+:host #label {
+	background: inherit;
+  pointer-events: none;
+	font-size: 11px;
+}
+
+:host #icon {
+	width: 50px;
+	height: 50px;
+}

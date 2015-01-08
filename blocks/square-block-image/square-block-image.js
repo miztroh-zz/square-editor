@@ -7,8 +7,14 @@ Polymer(
 			this.label = 'Image';
 		},
 		publish: {
-		  src: '',
-		  caption: ''
+		  src: {
+		    value: '',
+		    reflect: true
+		  },
+		  caption: {
+		    value: '',
+		    reflect: true
+		  }
 		},
 		ready: function () {
 		  this.super();
