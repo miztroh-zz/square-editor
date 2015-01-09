@@ -16,6 +16,8 @@
           return pos;
 			  },
 			  childrenUpdated: function (observer, mutations) {
+			    this.onMutation(this, this.childrenUpdated);
+
 			    if (this.$.blocks.querySelector('content').getDistributedNodes().length === 0) {
   					var defaultBlock = document.createElement(this.defaultBlock);
 
@@ -24,8 +26,6 @@
   						this.appendChild(defaultBlock);
   					}
 			    }
-
-			    this.onMutation(this, this.childrenUpdated);
 			  },
 			  clearBlocks: function () {
 			    var blocks = this.$.blocks.querySelector('content').getDistributedNodes();
@@ -40,11 +40,24 @@
 						return;
 					}
 
-					var blocks = this.$.blocks.querySelector('content').getDistributedNodes();
+          var that = this;
 
-					for (var i = 0; i < blocks.length; i += 1) {
-						blocks[i].mode = this.mode;
-					}
+          function setMode(blocks, mode) {
+            for (var i = 0; i < blocks.length; i += 1) {
+  						blocks[i].mode = mode;
+
+              if (blocks[i].shadowRoot) {
+                var content = blocks[i].shadowRoot.querySelector('content[select="[square-block],square-layout"]');
+
+                if (content && content.getDistributedNodes) {
+                  var child_blocks = content.getDistributedNodes();
+                  setMode(child_blocks, mode);
+                }
+              }
+  					}
+          }
+
+          setMode(this.$.blocks.querySelector('content').getDistributedNodes(), this.mode);
 				},
 				publish: {
 					defaultBlock: 'square-block-text',
@@ -54,7 +67,7 @@
 					}
 				},
 				ready: function () {
-					var that = this, insertBefore;
+					var that = this, insertionParent, insertionPoint;
 
           this.onMutation(this, this.childrenUpdated);
 
@@ -145,8 +158,18 @@
 					this.addEventListener(
 						'insertAbove',
 						function (event) {
-							if (Array.prototype.indexOf.call(this.$.blocks.querySelector('content').getDistributedNodes(), event.path[0]) >= 0) {
-								insertBefore = event.path[0];
+						  var contains = false, nodes = this.$.blocks.querySelector('content').getDistributedNodes();
+
+              for (var i = 0; i < nodes.length; i += 1) {
+                if (nodes[i].contains(event.path[0])) {
+                  contains = true;
+                  break;
+                }
+              }
+
+							if (contains) {
+							  insertionParent = event.path[0].parentNode;
+								insertionPoint = event.path[0];
 								this.$.blockChooser.opened = false;
 								this.$.blockChooser.relatedTarget = event.path[0];
 								this.$.blockChooser.opened = true;
@@ -157,8 +180,18 @@
 					this.addEventListener(
 						'insertBelow',
 						function (event) {
-							if (Array.prototype.indexOf.call(this.$.blocks.querySelector('content').getDistributedNodes(), event.path[0]) >= 0) {
-								insertBefore = event.path[0].nextSibling;
+						  var contains = false, nodes = this.$.blocks.querySelector('content').getDistributedNodes();
+
+              for (var i = 0; i < nodes.length; i += 1) {
+                if (nodes[i].contains(event.path[0])) {
+                  contains = true;
+                  break;
+                }
+              }
+
+							if (contains) {
+							  insertionParent = event.path[0].parentNode;
+								insertionPoint = event.path[0].nextSibling;
 								this.$.blockChooser.opened = false;
 								this.$.blockChooser.relatedTarget = event.path[0];
 								this.$.blockChooser.opened = true;
@@ -173,7 +206,7 @@
 								that.$.blockChooser.opened = false;
                 var block = document.createElement(event.target.block);
 								block.mode = 'edit';
-								that.insertBefore(block, insertBefore);
+								insertionParent.insertBefore(block, insertionPoint);
 								block.showOptions();
 							}
 						}
@@ -182,49 +215,54 @@
 					var shadow = document.createElement('paper-shadow');
 					shadow.setAttribute('z', '5');
 
+          this.$.blockChooser.addEventListener(
+            'drag-start',
+            function (event) {
+							that.$.blockChooser.opened = false;
+							event.detail.avatar.innerHTML = '';
+							event.detail.avatar.classList.toggle('square-editor', true);
+							shadow.innerHTML = '';
+							shadow.appendChild(document.createElement(event.detail.event.target.tagName.toLowerCase()));
+							event.detail.avatar.appendChild(shadow);
+							that.$.blocks.style.pointerEvents = 'none';
+
+							event.detail.drag = function (event) {
+							};
+
+							event.detail.drop = function (event) {
+								event.avatar.classList.toggle('square-editor', false);
+								event.avatar.innerHTML = '';
+								that.$.blocks.style.pointerEvents = '';
+							};
+            }
+          );
+
 					this.$.blocks.addEventListener(
 						'drag-start',
 						function (event) {
-						  //Dragging a new block
-							if (Array.prototype.indexOf.call(event.path, that.$.blockChooser) >= 0) {
-								that.$.blockChooser.opened = false;
-								event.detail.avatar.innerHTML = '';
-								event.detail.avatar.classList.toggle('square-editor', true);
-								shadow.innerHTML = '';
-								shadow.appendChild(document.createElement(event.detail.event.target.tile));
-								event.detail.avatar.appendChild(shadow);
-								that.$.blocks.style.pointerEvents = 'none';
-
-								event.detail.drag = function (event) {
-								};
-
-								event.detail.drop = function (event) {
-									event.avatar.classList.toggle('square-editor', false);
-									event.avatar.innerHTML = '';
-									that.$.blocks.style.pointerEvents = '';
-								};
-							}
-							//Dragging an existing block
-							else if (event.detail.event.target.parentNode === that && event.detail.event.target.hasAttribute('square-block') && event.detail.event.target.getAttribute('mode') === 'edit') {
-								that.$.blockChooser.opened = false;
-								event.detail.event.target.style.display = 'none';
-								event.detail.avatar.innerHTML = '';
-								event.detail.avatar.classList.toggle('square-editor', true);
-								shadow.innerHTML = '';
-								shadow.appendChild(document.createElement(event.detail.event.target.tile));
-								event.detail.avatar.appendChild(shadow);
-								that.$.fabPositionAnimation.pause();
-								that.$.fabPositionAnimation.direction = 'normal';
-								that.$.fabPositionAnimation.play();
-								that.$.mounting.style.overflow = 'hidden';
-								that.$.blocks.style.pointerEvents = 'none';
+						  if (that.mode === 'edit') {
+                that.$.fabBackgroundAnimation.pause();
+                that.$.fabBackgroundAnimation.direction = 'normal';
+                that.$.fabBackgroundAnimation.cancel();
+  							that.$.blockChooser.opened = false;
+  							event.detail.event.target.style.display = 'none';
+  							event.detail.avatar.innerHTML = '';
+  							event.detail.avatar.classList.toggle('square-editor', true);
+  							shadow.innerHTML = '';
+  							shadow.appendChild(document.createElement(event.detail.event.target.tile));
+  							event.detail.avatar.appendChild(shadow);
+  							that.$.fabPositionAnimation.pause();
+  							that.$.fabPositionAnimation.direction = 'normal';
+  							that.$.fabPositionAnimation.play();
+  							that.$.mounting.style.overflow = 'hidden';
+  							that.$.blocks.style.pointerEvents = 'none';
 
                 var old_target = that.$.mounting.querySelector('core-header-panel');
 
-								event.detail.drag = function (e) {
-								  event.detail.avatar.style.pointerEvents = 'none';
-								  var target = that.shadowRoot.elementFromPoint(e.event.pageX, e.event.pageY);
-								  event.detail.avatar.style.pointerEvents = 'all';
+  							event.detail.drag = function (e) {
+  							  e.avatar.style.pointerEvents = 'none';
+  							  var target = that.shadowRoot.elementFromPoint(e.event.pageX, e.event.pageY);
+  							  e.avatar.style.pointerEvents = 'all';
 
                   if (target !== old_target) {
                     old_target = target;
@@ -237,8 +275,8 @@
   								  }
 
         						that.$.fabBackgroundAnimation.play();
-								  }
-								};
+  							  }
+  							};
 
                 var disableContextMenu = function (e) {
                   e.stopPropagation();
@@ -249,36 +287,43 @@
 
                 event.detail.avatar.addEventListener('contextmenu', disableContextMenu);
 
-								event.detail.drop = function (event) {
-                  event.avatar.removeEventListener('contextmenu', disableContextMenu);
+  							event.detail.drop = function (e) {
+                  e.avatar.removeEventListener('contextmenu', disableContextMenu);
 
-									that.$.blocks.style.pointerEvents = '';
-									that.$.mounting.style.overflow = '';
+  								that.$.blocks.style.pointerEvents = '';
+  								that.$.mounting.style.overflow = '';
 
-									if (event.event.relatedTarget === that.$.fab && event.event.target.parentNode === that) {
-										that.removeChild(event.event.target);
+  							  e.avatar.style.pointerEvents = 'none';
+  							  var target = that.shadowRoot.elementFromPoint(e.event.pageX, e.event.pageY);
+  							  e.avatar.style.pointerEvents = 'all';
 
-										if (that.$.blocks.querySelector('content').getDistributedNodes().length === 0) {
-											var defaultBlock = document.createElement(that.defaultBlock);
+  								if (target === that.$.fab) {
+  									that.removeChild(e.event.target);
 
-											if (defaultBlock) {
-												defaultBlock.mode = that.mode;
-												that.appendChild(defaultBlock);
-											}
-										}
-									} else {
-								    event.event.target.style.display = '';
-									}
+  									if (that.$.blocks.querySelector('content').getDistributedNodes().length === 0) {
+  										var defaultBlock = document.createElement(that.defaultBlock);
 
-									event.avatar.classList.toggle('square-editor', false);
-									event.avatar.innerHTML = '';
-									that.$.fabPositionAnimation.pause();
-									that.$.fabPositionAnimation.direction = 'reverse';
-									that.$.fabPositionAnimation.play();
-    							that.$.fabBackgroundAnimation.cancel();
+  										if (defaultBlock) {
+  											defaultBlock.mode = that.mode;
+  											that.appendChild(defaultBlock);
+  										}
+  									}
+
+  									that.$.fabBackgroundAnimation.pause();
+  									that.$.fabBackgroundAnimation.direction = 'reverse';
+  									that.$.fabBackgroundAnimation.play();
+  								} else {
+  							    e.event.target.style.display = '';
+  								}
+
+  								e.avatar.classList.toggle('square-editor', false);
+  								e.avatar.innerHTML = '';
+  								that.$.fabPositionAnimation.pause();
+  								that.$.fabPositionAnimation.direction = 'reverse';
+  								that.$.fabPositionAnimation.play();
     							old_target = that.$.mounting.querySelector('core-header-panel');
-								};
-							}
+  							};
+						  }
 						}
 					);
 				},

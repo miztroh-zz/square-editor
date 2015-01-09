@@ -4,6 +4,10 @@
 	position: relative;
 }
 
+:host([mode="edit"]) #blocks {
+  padding: 15px;
+}
+
 :host #mounting {
 	background: white;
 	height: 100%;
@@ -46,11 +50,13 @@
 	display: none;
 }
 
-:host content[select="[square-block][mode='edit'],[square-block][mode='view']"]::content [square-block][mode='edit'] + [square-block][mode='edit'] {
+:host content[select="[square-block],square-layout"]::content [square-block][mode='edit'] + [square-block][mode='edit'],
+:host content[select="[square-block],square-layout"]::content square-layout[mode='edit'] + [square-block][mode='edit'],
+:host content[select="[square-block],square-layout"]::content [square-block][mode='edit'] + square-layout[mode='edit'] {
 	margin-top: -3px;
 }
 
-:host content[select="[square-block][mode='edit'],[square-block][mode='view']"]::content [square-block][mode='edit'] + [square-block][mode='edit']::shadow #topDroplet {
+:host content[select="[square-block],square-layout"]::content [square-block][mode='edit'] + [square-block][mode='edit']::shadow #topDroplet {
 	display: none;
 }
 

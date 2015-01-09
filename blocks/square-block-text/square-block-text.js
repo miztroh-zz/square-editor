@@ -105,6 +105,7 @@ Polymer(
           'use strict';
 
           var existingHTML = that.innerHTML;
+          that.innerHTML = '';
           var scribe = new Scribe(that);
 
           scribe.on(

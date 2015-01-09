@@ -1,9 +1,10 @@
 :host {
 	display: block;
+	width: 100%;
+	height:;
 }
 
 :host #matting {
-	padding: 0 15px!important;
 	font-family: RobotoDraft;
 	font-size: 14px;
 	background: white!important;
