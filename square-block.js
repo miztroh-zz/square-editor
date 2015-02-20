@@ -22,6 +22,7 @@ Polymer(
 				return;
 			}
 
+      this.setAttribute('mode', this.mode);
 			this.fire('modeChanged');
 		},
 	  pointPolygonDistance: function (polygon, point, orientation) {
@@ -477,6 +478,8 @@ Polymer(
 		save: function () {
 		  var clone = this.cloneNode();
 		  clone.mode = 'view';
+		  clone.removeAttribute('mode');
+    	clone.removeAttribute('contenteditable');
 		  clone.innerHTML = this.innerHTML;
 		  return clone.outerHTML;
 		},

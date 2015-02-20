@@ -74,7 +74,7 @@
   display: none!important;
 }
 
-:host #toolbar > .button {
+:host #toolbar .button {
   padding: 7px;
   display: inline-block;
   background: transparent;
@@ -83,30 +83,30 @@
   outline: none;
 }
 
-:host #toolbar > .button[disabled] {
+:host #toolbar .button[disabled] {
   color: #777777;
 }
 
-:host #toolbar > .button:not([disabled]):hover {
+:host #toolbar .button:not([disabled]):hover {
   cursor: pointer;
   color: white;
 }
 
-:host #toolbar > .button.danger:not([disabled]):hover {
+:host #toolbar .button.danger:not([disabled]):hover {
   background: #F0523D;
 }
 
-:host #toolbar > .button.active {
+:host #toolbar .button.active {
   background: #797979;
   color: white;
 }
 
-:host #toolbar > .button > core-icon {
+:host #toolbar .button > core-icon {
   width: 20px;
   height: 20px;
 }
 
-:host #toolbar > core-dropdown > core-menu > .button {
+:host #toolbar core-dropdown > core-menu > .button {
   padding: 7px;
   display: block;
   background: transparent;
@@ -118,17 +118,17 @@
   line-height: 20px;
 }
 
-:host #toolbar > core-dropdown > core-menu > .button:hover {
+:host #toolbar core-dropdown > core-menu > .button:hover {
   cursor: pointer;
   color: white;
 }
 
-:host #toolbar > core-dropdown > core-menu > .button.active {
+:host #toolbar core-dropdown > core-menu > .button.active {
   background: #797979;
   color: white;
 }
 
-:host #toolbar > core-dropdown > core-menu > .button.danger:hover {
+:host #toolbar core-dropdown > core-menu > .button.danger:hover {
   background: #F0523D;
 }
 

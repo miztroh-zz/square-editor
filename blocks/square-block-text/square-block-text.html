@@ -12,9 +12,13 @@
 <link rel="import" href="/bower_components/core-menu/core-menu.html">
 <polymer-element name="square-block-text" extends="square-block" label="Text" tile="square-tile-text">
   <template>
-    <link rel="stylesheet" href="square-block-text.css">
-  	<shadow></shadow>
-  	<div id="tools">
+    <style>
+      :host {
+        outline: none;
+      }
+    </style>
+    <shadow></shadow>
+    <scribe-editor id="editor" layout horizontal center-justified wrap>
       <div class="button" data-command-name="undo" title="Undo"><core-icon icon="undo"></core-icon></div>
       <div class="button" data-command-name="redo" title="Redo"><core-icon icon="redo"></core-icon></div>
       <div class="button" data-command-name="bold" title="Bold"><core-icon icon="editor:format-bold"></core-icon></div>
@@ -39,7 +43,7 @@
       <div class="button" on-click="{{togglePasteAsPlainText}}" title="Paste as Plain Text"><core-icon icon="content-paste"></core-icon></div>
       <div class="button" data-command-name="removeFormat" title="Remove Formatting"><core-icon icon="editor:format-clear"></core-icon></div>
       <div class="button danger" title="Remove Block" id="remove"><core-icon icon="delete"></core-icon></div>
-  	</div>
+    </div>
   	<square-dialog heading="Paste as Plain Text" id="pasteAsPlainText">
 	    <textarea id="plainTextInput" style="tab-size: 3; min-height: 200px; width: 600px; min-width: 600px; max-width: 600px; outline: none; font-family: inherit; font-size: inherit; border: 0; padding: 20px;"></textarea>
   	  <paper-button dismissive id="plainTextCancel">Cancel</paper-button>
@@ -47,5 +51,154 @@
   	</square-dialog>
   </template>
 	<script src="/bower_components/requirejs/require.js"></script>
-	<script src="square-block-text.js"></script>
+	<script>
+    Polymer(
+      'square-block-text',
+      {
+    		distanceToToolbar: function (x, y) {
+    		  var new_toolbarDistance = this.super(arguments);
+
+          if (this.$.formatsDropdown.opened) {
+    			  var formatsDropdownRect = this.$.formatsDropdown.getBoundingClientRect();
+
+    				var formatsDropdownDistance = this.pointPolygonDistance(
+    				  [
+    				    [formatsDropdownRect.left, formatsDropdownRect.top],
+    				    [formatsDropdownRect.right, formatsDropdownRect.top],
+    				    [formatsDropdownRect.right, formatsDropdownRect.bottom],
+    				    [formatsDropdownRect.left, formatsDropdownRect.bottom]
+    				  ],
+    				  [x, y],
+    				  'CCW'
+    				);
+
+            if (formatsDropdownDistance < new_toolbarDistance) new_toolbarDistance = formatsDropdownDistance;
+
+            if (new_toolbarDistance > 60) {
+              this.$.formatsDropdown.opened = false;
+            }
+          }
+
+          return new_toolbarDistance;
+    		},
+    		labelChanged: function () {
+    			this.label = 'Text';
+    		},
+        modeChanged: function () {
+          this.super();
+
+          this.async(
+            function () {
+              if (this.mode === 'edit') {
+                this.$.editor.target = this;
+              } else {
+                if (this.$.editor.target) this.$.editor.target.removeAttribute('contenteditable');
+                this.$.editor.target = null;
+                this.$.toolbar.style.display = '';
+              }
+            },
+            null,
+            100
+          );
+        },
+    		ready: function () {
+    		  var that = this;
+
+    			this.super();
+    			this.$.border3.insertBefore(this.$.editor, this.$.content);
+    			this.$.toolbar.appendChild(this.$.editor);
+    			this.$.editor.insertBefore(this.$.toolbarLabel, this.$.editor.children[0]);
+
+          this.$.remove.addEventListener(
+            'click',
+            function () {
+              that.parentNode.removeChild(that);
+            }
+          );
+    		},
+    	  toggleFormats: function () {
+    	    this.$.formatsDropdown.toggle();
+    	  },
+    	  togglePasteAsPlainText: function () {
+    	    this.$.pasteAsPlainText.toggle();
+    	  }
+      }
+    );
+	</script>
+</polymer-element>
+<polymer-element name="scribe-editor" attributes="target">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+    <content></content>
+  </template>
+  <script src="/bower_components/requirejs/require.js"></script>
+  <script>
+    require(
+      {
+        paths: {
+          'scribe': '/bower_components/scribe/scribe',
+          'scribe-plugin-toolbar': '/bower_components/scribe-plugin-toolbar/src/scribe-plugin-toolbar'
+        }
+      },
+      [
+        'scribe',
+        'scribe-plugin-toolbar'
+      ],
+      function (
+        Scribe,
+        scribePluginToolbar
+      ) {
+        Polymer(
+          'scribe-editor',
+          {
+            ready: function () {
+              var scribe;
+
+              this.addEventListener(
+                'targetChanged',
+                function () {
+                  var that = this;
+
+                  if (scribe) {
+                    scribe.off('content-changed');
+                    scribe = null;
+                  }
+
+                  if (this.target) {
+                    scribe = new Scribe(this.target);
+                    scribe.use(scribePluginToolbar(this));
+
+                    scribe.on(
+                      'content-changed',
+                      function () {
+                        if (that.target.textContent.length === 0) that.setContent('<p>Write here...</p>');
+                        that.fire('contentChanged', {content: that.getContent()});
+                      }
+                    );
+
+                    if (this.target.textContent.length === 0) this.setContent('<p>Write here...</p>');
+                  }
+                }
+              );
+
+              this.getContent = function (content) {
+                return scribe ? scribe.getContent() : '';
+              };
+
+              this.setContent = function (content) {
+                if (scribe) scribe.setHTML(content);
+              };
+            },
+            targetChanged: function () {
+              this.fire('targetChanged');
+            }
+          }
+        );
+      }
+    );
+  </script>
 </polymer-element>

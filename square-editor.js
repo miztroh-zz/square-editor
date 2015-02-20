@@ -1,6 +1,10 @@
 (
 	function () {
-		var styleAdded = false;
+	  var css = 'core-drag-avatar.square-editor {z-index: 100; margin: -50px 0 0 -50px; opacity: 0.7; pointer-events: all;} core-drag-avatar.square-editor > paper-shadow {background: white; cursor: move; cursor: url(/bower_components/square-editor/closedhand.cur), move; cursor: url(/bower_components/square-editor/closedhand.cur) 4 4, move;}';
+		var style = document.createElement('style');
+		if (style.styleSheet) style.styleSheet.cssText = css;
+		else style.appendChild(document.createTextNode(css));
+		document.getElementsByTagName('head')[0].appendChild(style);
 
 		Polymer(
 			{
@@ -146,15 +150,6 @@
 						}
 					);
 
-					if (!styleAdded) {
-						styleAdded = true;
-						var css = 'core-drag-avatar.square-editor {z-index: 10; margin: -50px 0 0 -50px; opacity: 0.7; pointer-events: all;} core-drag-avatar.square-editor > paper-shadow {background: white; cursor: move; cursor: url(closedhand.cur), move; cursor: url(closedhand.cur) 4 4, move;}';
-						var style = document.createElement('style');
-						if (style.styleSheet) style.styleSheet.cssText = css;
-						else style.appendChild(document.createTextNode(css));
-						document.getElementsByTagName('head')[0].appendChild(style);
-					}
-
 					this.addEventListener(
 						'insertAbove',
 						function (event) {
@@ -296,9 +291,10 @@
   							  e.avatar.style.pointerEvents = 'none';
   							  var target = that.shadowRoot.elementFromPoint(e.event.pageX, e.event.pageY);
   							  e.avatar.style.pointerEvents = 'all';
+  							  console.log(target);
 
   								if (target === that.$.fab) {
-  									that.removeChild(e.event.target);
+  									e.event.target.parentNode.removeChild(e.event.target);
 
   									if (that.$.blocks.querySelector('content').getDistributedNodes().length === 0) {
   										var defaultBlock = document.createElement(that.defaultBlock);

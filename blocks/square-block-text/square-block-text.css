@@ -1,8 +1,0 @@
-:host {
-  outline: none;
-}
-
-:host::shadow ::content blockquote {
-  padding-left: 20px;
-  margin: 0;
-}
