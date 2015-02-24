@@ -7,21 +7,22 @@
 		<link rel="import" href="square-editor.html">
 	</head>
 	<body fullbleed unresolved style="background: #ebebeb;">
-		<div style="max-width: 760px; margin: 0 auto 0 auto; height: 100%;">
-			<square-editor mode="edit">
-				<square-block-text mode="edit"><p>Hello, world!</p></square-block-text>
-				<square-layout>
-				  <square-layout direction="vertical">
-				    <square-block-text mode="edit">A</square-block-text>
-				  </square-layout>
-				  <square-layout direction="vertical">
-  				  <square-block-text mode="edit">B</square-block-text>
-  				  <square-block-text mode="edit">C</square-block-text>
-				  </square-layout>
-				  <square-layout direction="vertical">
-				    <square-block-text mode="edit">D</square-block-text>
-				  </square-layout>
-				</square-layout>
+		<div style="max-width: 760px; margin: 0 auto 0 auto; height: 100%;" vertical layout>
+			<square-editor mode="edit" flex>
+				<square-block-text mode="edit"><p>One</p></square-block-text>
+				<square-block-text mode="edit"><p>Two</p></square-block-text>
+        <!--<square-layout>
+          <square-layout direction="vertical">
+            <square-block-text mode="edit"><p>A</p></square-block-text>
+          </square-layout>
+          <square-layout direction="vertical">
+            <square-block-text mode="edit"><p>B</p></square-block-text>
+            <square-block-text mode="edit"><p>C</p></square-block-text>
+          </square-layout>
+          <square-layout direction="vertical">
+            <square-block-text mode="edit"><p>D</p></square-block-text>
+          </square-layout>
+        </square-layout>-->
 				<square-category label="Basic">
 					<square-tile-text></square-tile-text>
 					<square-tile-quote></square-tile-quote>

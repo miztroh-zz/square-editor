@@ -1,7 +1,6 @@
 :host {
 	display: block;
 	width: 100%;
-	height:;
 }
 
 :host #matting {
@@ -13,13 +12,7 @@
 :host #border1,
 :host #border2,
 :host #border3 {
-	border-top: 1px solid transparent;
-	border-bottom: 1px solid transparent;
-}
-
-:host #border2 {
-	border-left: 1px solid transparent;
-	border-right: 1px solid transparent;
+	border: 1px solid transparent;
 }
 
 :host([mode="edit"]) #border2:hover {

@@ -1,0 +1,13 @@
+<link rel="import" href="/bower_components/polymer/polymer.html">
+<link rel="import" href="/bower_components/core-drag-drop/core-drag-drop.html">
+<link rel="import" href="../../square-block.html">
+<polymer-element name="square-block-layout" extends="square-block" label="Horizontal Layout" tile="square-tile-layout" direction="horizontal">
+  <template>
+  	<shadow></shadow>
+  	<div id="layout" layout horizontal?="{{direction === 'horizontal'}}" vertical?="{{direction === 'vertical'}}">
+  	  <core-drag-drop id="dragdrop"></core-drag-drop>
+  	</div>
+  	<div class="button danger" title="Remove Layout" id="remove"><core-icon icon="delete"></core-icon></div>
+  </template>
+	<script src="square-block-layout.js"></script>
+</polymer-element>

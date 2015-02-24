@@ -44,24 +44,11 @@
 						return;
 					}
 
-          var that = this;
+          var blocks = this.querySelectorAll('[square-block]');
 
-          function setMode(blocks, mode) {
-            for (var i = 0; i < blocks.length; i += 1) {
-  						blocks[i].mode = mode;
-
-              if (blocks[i].shadowRoot) {
-                var content = blocks[i].shadowRoot.querySelector('content[select="[square-block],square-layout"]');
-
-                if (content && content.getDistributedNodes) {
-                  var child_blocks = content.getDistributedNodes();
-                  setMode(child_blocks, mode);
-                }
-              }
-  					}
-          }
-
-          setMode(this.$.blocks.querySelector('content').getDistributedNodes(), this.mode);
+          for (var i = 0; i < blocks.length; i += 1) {
+						blocks[i].mode = this.mode;
+					}
 				},
 				publish: {
 					defaultBlock: 'square-block-text',
@@ -71,7 +58,7 @@
 					}
 				},
 				ready: function () {
-					var that = this, insertionParent, insertionPoint;
+					var that = this, insertionPoint;
 
           this.onMutation(this, this.childrenUpdated);
 
@@ -150,47 +137,32 @@
 						}
 					);
 
+          var insertAboveOrBelow = function (block, side) {
+            if (['top', 'bottom'].indexOf(side) === -1) return;
+					  var blocks = that.$.blocks.querySelector('content').getDistributedNodes();
+
+            for (var i = 0; i < blocks.length; i += 1) {
+              if (blocks[i].contains(block)) {
+  							insertionPoint = {block: block, side: side};
+  							that.$.blockChooser.opened = false;
+  							that.$.blockChooser.relatedTarget = blocks[i];
+  							that.$.blockChooser.opened = true;
+                break;
+              }
+            }
+          };
+
 					this.addEventListener(
 						'insertAbove',
 						function (event) {
-						  var contains = false, nodes = this.$.blocks.querySelector('content').getDistributedNodes();
-
-              for (var i = 0; i < nodes.length; i += 1) {
-                if (nodes[i].contains(event.path[0])) {
-                  contains = true;
-                  break;
-                }
-              }
-
-							if (contains) {
-							  insertionParent = event.path[0].parentNode;
-								insertionPoint = event.path[0];
-								this.$.blockChooser.opened = false;
-								this.$.blockChooser.relatedTarget = event.path[0];
-								this.$.blockChooser.opened = true;
-							}
+						  insertAboveOrBelow(event.path[0], 'top');
 						}
 					);
 
 					this.addEventListener(
 						'insertBelow',
 						function (event) {
-						  var contains = false, nodes = this.$.blocks.querySelector('content').getDistributedNodes();
-
-              for (var i = 0; i < nodes.length; i += 1) {
-                if (nodes[i].contains(event.path[0])) {
-                  contains = true;
-                  break;
-                }
-              }
-
-							if (contains) {
-							  insertionParent = event.path[0].parentNode;
-								insertionPoint = event.path[0].nextSibling;
-								this.$.blockChooser.opened = false;
-								this.$.blockChooser.relatedTarget = event.path[0];
-								this.$.blockChooser.opened = true;
-							}
+						  insertAboveOrBelow(event.path[0], 'bottom');
 						}
 					);
 
@@ -201,7 +173,20 @@
 								that.$.blockChooser.opened = false;
                 var block = document.createElement(event.target.block);
 								block.mode = 'edit';
-								insertionParent.insertBefore(block, insertionPoint);
+
+                if (insertionPoint.block.parentNode.tagName.toLowerCase() === 'square-block-layout' && insertionPoint.block.parentNode.direction === 'horizontal') {
+                  var layout = document.createElement('square-block-layout');
+                  layout.direction = 'vertical';
+                  layout.mode = that.mode;
+                  var parent = insertionPoint.block.parentNode;
+                  var insertAt = insertionPoint.block.nextElementSibling;
+                  layout.appendChild(insertionPoint.block);
+                  layout.insertBefore(block, insertionPoint.side === 'top' ? insertionPoint.block : insertionPoint.block.nextElementSibling);
+                  parent.insertBefore(layout, insertAt);
+                } else {
+								  insertionPoint.block.parentNode.insertBefore(block, insertionPoint.side === 'top' ? insertionPoint.block : insertionPoint.block.nextElementSibling);
+                }
+
 								block.showOptions();
 							}
 						}
@@ -232,6 +217,143 @@
             }
           );
 
+          var getInsertionPoint = function (x, y, highlight) {
+            var blocks = that.querySelectorAll('[square-block]');
+            var insertionPoint = false;
+
+            for (var i = 0; i < blocks.length; i += 1) {
+              if (blocks[i].style.display === 'none') continue;
+
+              if (insertionPoint) {
+                continue;
+                blocks[i].$.border1.style.borderLeftColor = '';
+                blocks[i].$.border2.style.borderLeftColor = '';
+                blocks[i].$.border3.style.borderLeftColor = '';
+                blocks[i].$.border1.style.borderTopColor = '';
+                blocks[i].$.border2.style.borderTopColor = '';
+                blocks[i].$.border3.style.borderTopColor = '';
+                blocks[i].$.border1.style.borderRightColor = '';
+                blocks[i].$.border2.style.borderRightColor = '';
+                blocks[i].$.border3.style.borderRightColor = '';
+                blocks[i].$.border1.style.borderBottomColor = '';
+                blocks[i].$.border2.style.borderBottomColor = '';
+                blocks[i].$.border3.style.borderBottomColor = '';
+              }
+
+              var rect = blocks[i].$.border2.getBoundingClientRect();
+
+              var distLeft = Math.abs(
+                blocks[i].pointPolygonDistance(
+                  [
+                    [rect.left - 5, rect.top - 5],
+                    [rect.left + 5, rect.top + 5],
+                    [rect.left + 5, rect.bottom - 5],
+                    [rect.left - 5, rect.bottom + 5]
+                  ],
+                  [x, y],
+                  'CCW'
+                )
+              );
+
+              if (distLeft <= 10) {
+                if (highlight) {
+                  blocks[i].$.border1.style.borderLeftColor = 'black';
+                  blocks[i].$.border2.style.borderLeftColor = 'black';
+                  blocks[i].$.border3.style.borderLeftColor = 'black';
+                }
+
+                insertionPoint = {block: blocks[i], side: 'left'};
+              } else {
+                blocks[i].$.border1.style.borderLeftColor = '';
+                blocks[i].$.border2.style.borderLeftColor = '';
+                blocks[i].$.border3.style.borderLeftColor = '';
+              }
+
+              var distTop = Math.abs(
+                blocks[i].pointPolygonDistance(
+                  [
+                    [rect.left - 5, rect.top - 5],
+                    [rect.right + 5, rect.top - 5],
+                    [rect.right - 5, rect.top + 5],
+                    [rect.left + 5, rect.top + 5]
+                  ],
+                  [x, y],
+                  'CCW'
+                )
+              );
+
+              if (distTop <= 10 && !insertionPoint) {
+                if (highlight) {
+                  blocks[i].$.border1.style.borderTopColor = 'black';
+                  blocks[i].$.border2.style.borderTopColor = 'black';
+                  blocks[i].$.border3.style.borderTopColor = 'black';
+                }
+
+                insertionPoint = {block: blocks[i], side: 'top'};
+              } else {
+                blocks[i].$.border1.style.borderTopColor = '';
+                blocks[i].$.border2.style.borderTopColor = '';
+                blocks[i].$.border3.style.borderTopColor = '';
+              }
+
+              var distRight = Math.abs(
+                blocks[i].pointPolygonDistance(
+                  [
+                    [rect.right - 5, rect.top + 5],
+                    [rect.right + 5, rect.top - 5],
+                    [rect.right + 5, rect.bottom + 5],
+                    [rect.right - 5, rect.bottom - 5]
+                  ],
+                  [x, y],
+                  'CCW'
+                )
+              );
+
+              if (distRight <= 10 && !insertionPoint) {
+                if (highlight) {
+                  blocks[i].$.border1.style.borderRightColor = 'black';
+                  blocks[i].$.border2.style.borderRightColor = 'black';
+                  blocks[i].$.border3.style.borderRightColor = 'black';
+                }
+
+                insertionPoint = {block: blocks[i], side: 'right'};
+              } else {
+                blocks[i].$.border1.style.borderRightColor = '';
+                blocks[i].$.border2.style.borderRightColor = '';
+                blocks[i].$.border3.style.borderRightColor = '';
+              }
+
+              var distBottom = Math.abs(
+                blocks[i].pointPolygonDistance(
+                  [
+                    [rect.left + 5, rect.bottom - 5],
+                    [rect.right - 5, rect.bottom - 5],
+                    [rect.right + 5, rect.bottom + 5],
+                    [rect.left - 5, rect.bottom + 5]
+                  ],
+                  [x, y],
+                  'CCW'
+                )
+              );
+
+              if (distBottom <= 10 && !insertionPoint) {
+                if (highlight) {
+                  blocks[i].$.border1.style.borderBottomColor = 'black';
+                  blocks[i].$.border2.style.borderBottomColor = 'black';
+                  blocks[i].$.border3.style.borderBottomColor = 'black';
+                }
+
+                insertionPoint = {block: blocks[i], side: 'bottom'};
+              } else {
+                blocks[i].$.border1.style.borderBottomColor = '';
+                blocks[i].$.border2.style.borderBottomColor = '';
+                blocks[i].$.border3.style.borderBottomColor = '';
+              }
+            }
+
+            return insertionPoint;
+          };
+
 					this.$.blocks.addEventListener(
 						'drag-start',
 						function (event) {
@@ -255,22 +377,27 @@
                 var old_target = that.$.mounting.querySelector('core-header-panel');
 
   							event.detail.drag = function (e) {
+  							  getInsertionPoint(e.event.pageX, e.event.pageY, true);
+
   							  e.avatar.style.pointerEvents = 'none';
   							  var target = that.shadowRoot.elementFromPoint(e.event.pageX, e.event.pageY);
   							  e.avatar.style.pointerEvents = 'all';
 
-                  if (target !== old_target) {
+                  if (target && target !== old_target) {
+                    if ((target === that.$.fab || old_target === that.$.fab)) {
+                      that.$.fabBackgroundAnimation.pause();
+
+                      if (target === that.$.fab) {
+                        that.$.fabBackgroundAnimation.direction = 'normal';
+                      } else {
+                        that.$.fabBackgroundAnimation.direction = 'reverse';
+                      }
+
+                      that.$.fabBackgroundAnimation.play();
+                    }
+
                     old_target = target;
-        						that.$.fabBackgroundAnimation.pause();
-
-  								  if (target === that.$.fab) {
-        							that.$.fabBackgroundAnimation.direction = 'normal';
-  								  } else {
-        							that.$.fabBackgroundAnimation.direction = 'reverse';
-  								  }
-
-        						that.$.fabBackgroundAnimation.play();
-  							  }
+                  }
   							};
 
                 var disableContextMenu = function (e) {
@@ -283,6 +410,78 @@
                 event.detail.avatar.addEventListener('contextmenu', disableContextMenu);
 
   							event.detail.drop = function (e) {
+  							  var insertionPoint = getInsertionPoint(e.event.pageX, e.event.pageY);
+
+                  if (insertionPoint) {
+                    insertionPoint.block.$.border1.style.borderLeftColor = '';
+                    insertionPoint.block.$.border2.style.borderLeftColor = '';
+                    insertionPoint.block.$.border3.style.borderLeftColor = '';
+                    insertionPoint.block.$.border1.style.borderTopColor = '';
+                    insertionPoint.block.$.border2.style.borderTopColor = '';
+                    insertionPoint.block.$.border3.style.borderTopColor = '';
+                    insertionPoint.block.$.border1.style.borderRightColor = '';
+                    insertionPoint.block.$.border2.style.borderRightColor = '';
+                    insertionPoint.block.$.border3.style.borderRightColor = '';
+                    insertionPoint.block.$.border1.style.borderBottomColor = '';
+                    insertionPoint.block.$.border2.style.borderBottomColor = '';
+                    insertionPoint.block.$.border3.style.borderBottomColor = '';
+
+                    var insertionPointInLayout = insertionPoint.block.parentNode.tagName.toLowerCase() === 'square-block-layout';
+
+                    switch (insertionPoint.side) {
+                      case 'top':
+                        if (insertionPointInLayout && insertionPoint.block.parentNode.direction === 'horizontal') {
+                          var layout = document.createElement('square-block-layout');
+                          layout.direction = 'vertical';
+                          layout.mode = that.mode;
+                          insertionPoint.block.parentNode.insertBefore(layout, insertionPoint.block);
+                          layout.appendChild(e.event.target);
+                          layout.appendChild(insertionPoint.block);
+                        } else {
+                          insertionPoint.block.parentNode.insertBefore(e.event.target, insertionPoint.block);
+                        }
+
+                        break;
+                      case 'bottom':
+                        if (insertionPointInLayout && insertionPoint.block.parentNode.direction === 'horizontal') {
+                          var layout = document.createElement('square-block-layout');
+                          layout.direction = 'vertical';
+                          layout.mode = that.mode;
+                          insertionPoint.block.parentNode.insertBefore(layout, insertionPoint.block);
+                          layout.appendChild(insertionPoint.block);
+                          layout.appendChild(e.event.target);
+                        } else {
+                          insertionPoint.block.parentNode.insertBefore(e.event.target, insertionPoint.block.nextElementSibling);
+                        }
+
+                        break;
+                      case 'left':
+                        if (insertionPointInLayout && insertionPoint.block.parentNode.direction === 'horizontal') {
+                          insertionPoint.block.parentNode.insertBefore(e.event.target, insertionPoint.block);
+                        } else {
+                          var layout = document.createElement('square-block-layout');
+                          layout.mode = that.mode;
+                          insertionPoint.block.parentNode.insertBefore(layout, insertionPoint.block);
+                          layout.appendChild(e.event.target);
+                          layout.appendChild(insertionPoint.block);
+                        }
+
+                        break;
+                      case 'right':
+                        if (insertionPointInLayout && insertionPoint.block.parentNode.direction === 'horizontal') {
+                          insertionPoint.block.parentNode.insertBefore(e.event.target, insertionPoint.block.nextElementSibling);
+                        } else {
+                          var layout = document.createElement('square-block-layout');
+                          layout.mode = that.mode;
+                          insertionPoint.block.parentNode.insertBefore(layout, insertionPoint.block);
+                          layout.appendChild(insertionPoint.block);
+                          layout.appendChild(e.event.target);
+                        }
+
+                        break;
+                    }
+                  }
+
                   e.avatar.removeEventListener('contextmenu', disableContextMenu);
 
   								that.$.blocks.style.pointerEvents = '';
@@ -291,7 +490,6 @@
   							  e.avatar.style.pointerEvents = 'none';
   							  var target = that.shadowRoot.elementFromPoint(e.event.pageX, e.event.pageY);
   							  e.avatar.style.pointerEvents = 'all';
-  							  console.log(target);
 
   								if (target === that.$.fab) {
   									e.event.target.parentNode.removeChild(e.event.target);
