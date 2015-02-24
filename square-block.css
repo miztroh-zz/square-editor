@@ -153,6 +153,4 @@
 
 :host #toolbarLabel:hover {
   cursor: move;
-  cursor: url(openhand.cur), move;
-  cursor: url(openhand.cur) 4 4, move;
 }

@@ -1,6 +1,6 @@
 (
 	function () {
-	  var css = 'core-drag-avatar.square-editor {z-index: 100; margin: -50px 0 0 -50px; opacity: 0.7; pointer-events: all;} core-drag-avatar.square-editor > paper-shadow {background: white; cursor: move; cursor: url(/bower_components/square-editor/closedhand.cur), move; cursor: url(/bower_components/square-editor/closedhand.cur) 4 4, move;}';
+	  var css = 'core-drag-avatar.square-editor {z-index: 100; margin: -50px 0 0 -50px; opacity: 0.7; pointer-events: all;} core-drag-avatar.square-editor > paper-shadow {background: white; cursor: move;}';
 		var style = document.createElement('style');
 		if (style.styleSheet) style.styleSheet.cssText = css;
 		else style.appendChild(document.createTextNode(css));
