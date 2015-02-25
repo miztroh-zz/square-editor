@@ -206,14 +206,93 @@
 							event.detail.avatar.appendChild(shadow);
 							that.$.blocks.style.pointerEvents = 'none';
 
-							event.detail.drag = function (event) {
+							event.detail.drag = function (e) {
+							  getInsertionPoint(e.event.pageX, e.event.pageY, true);
 							};
 
-							event.detail.drop = function (event) {
-								event.avatar.classList.toggle('square-editor', false);
-								event.avatar.innerHTML = '';
+							event.detail.drop = function (e) {
+							  var insertionPoint = getInsertionPoint(e.event.pageX, e.event.pageY);
+
+                if (insertionPoint) {
+                  var target = document.createElement(e.event.target.block);
+
+                  if (target) {
+                    insertionPoint.block.$.border1.style.borderLeftColor = '';
+                    insertionPoint.block.$.border2.style.borderLeftColor = '';
+                    insertionPoint.block.$.border3.style.borderLeftColor = '';
+                    insertionPoint.block.$.border1.style.borderTopColor = '';
+                    insertionPoint.block.$.border2.style.borderTopColor = '';
+                    insertionPoint.block.$.border3.style.borderTopColor = '';
+                    insertionPoint.block.$.border1.style.borderRightColor = '';
+                    insertionPoint.block.$.border2.style.borderRightColor = '';
+                    insertionPoint.block.$.border3.style.borderRightColor = '';
+                    insertionPoint.block.$.border1.style.borderBottomColor = '';
+                    insertionPoint.block.$.border2.style.borderBottomColor = '';
+                    insertionPoint.block.$.border3.style.borderBottomColor = '';
+
+                    var insertionPointInLayout = insertionPoint.block.parentNode.tagName.toLowerCase() === 'square-block-layout';
+
+                    switch (insertionPoint.side) {
+                      case 'top':
+                        if (insertionPointInLayout && insertionPoint.block.parentNode.direction === 'horizontal') {
+                          var layout = document.createElement('square-block-layout');
+                          layout.direction = 'vertical';
+                          layout.mode = that.mode;
+                          insertionPoint.block.parentNode.insertBefore(layout, insertionPoint.block);
+                          layout.appendChild(target);
+                          layout.appendChild(insertionPoint.block);
+                        } else {
+                          insertionPoint.block.parentNode.insertBefore(target, insertionPoint.block);
+                        }
+
+                        break;
+                      case 'bottom':
+                        if (insertionPointInLayout && insertionPoint.block.parentNode.direction === 'horizontal') {
+                          var layout = document.createElement('square-block-layout');
+                          layout.direction = 'vertical';
+                          layout.mode = that.mode;
+                          insertionPoint.block.parentNode.insertBefore(layout, insertionPoint.block);
+                          layout.appendChild(insertionPoint.block);
+                          layout.appendChild(target);
+                        } else {
+                          insertionPoint.block.parentNode.insertBefore(target, insertionPoint.block.nextElementSibling);
+                        }
+
+                        break;
+                      case 'left':
+                        if (insertionPointInLayout && insertionPoint.block.parentNode.direction === 'horizontal') {
+                          insertionPoint.block.parentNode.insertBefore(target, insertionPoint.block);
+                        } else {
+                          var layout = document.createElement('square-block-layout');
+                          layout.mode = that.mode;
+                          insertionPoint.block.parentNode.insertBefore(layout, insertionPoint.block);
+                          layout.appendChild(target);
+                          layout.appendChild(insertionPoint.block);
+                        }
+
+                        break;
+                      case 'right':
+                        if (insertionPointInLayout && insertionPoint.block.parentNode.direction === 'horizontal') {
+                          insertionPoint.block.parentNode.insertBefore(target, insertionPoint.block.nextElementSibling);
+                        } else {
+                          var layout = document.createElement('square-block-layout');
+                          layout.mode = that.mode;
+                          insertionPoint.block.parentNode.insertBefore(layout, insertionPoint.block);
+                          layout.appendChild(insertionPoint.block);
+                          layout.appendChild(target);
+                        }
+
+                        break;
+                    }
+
+                    target.showOptions();
+                  }
+                }
+
+								e.avatar.classList.toggle('square-editor', false);
+								e.avatar.innerHTML = '';
 								that.$.blocks.style.pointerEvents = '';
-							};
+							}
             }
           );
 
